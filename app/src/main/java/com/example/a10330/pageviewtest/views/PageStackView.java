@@ -640,11 +640,11 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
         int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
             PageView tv = (PageView) getChildAt(i);
-            if (tv.getBackground() != null) {
+           /* if (tv.getBackground() != null) {
                 tv.getBackground().getPadding(mTmpRect);
             } else {
                 mTmpRect.setEmpty();
-            }
+            }*/
             tv.layout(mLayoutAlgorithm.mTaskRect.left - mTmpRect.left,
                     mLayoutAlgorithm.mTaskRect.top - mTmpRect.top,
                     mLayoutAlgorithm.mTaskRect.right + mTmpRect.right,
@@ -653,8 +653,10 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
 
         if (mAwaitingFirstLayout) {
             mAwaitingFirstLayout = false;
-            onFirstLayout();//好像没什么用，只是小差差没有了
+//            onFirstLayout();//好像没什么用，只是小差差没有了
         }
+        // Start dozing
+        mUIDozeTrigger.startDozing();//从下面移动上来的
     }
 
     /**
