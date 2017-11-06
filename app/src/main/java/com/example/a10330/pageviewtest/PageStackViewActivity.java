@@ -58,7 +58,7 @@ public class PageStackViewActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams. FLAG_FULLSCREEN , WindowManager.LayoutParams. FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         setContentView(R.layout.activity_page_view);
-//        getWindow().setBackgroundDrawable(mBackgroundScrim);
+        getWindow().setBackgroundDrawable(mBackgroundScrim);
 
         mPageStackView = (PageStackView) findViewById(R.id.pageStackView);
         mDefaultThumbnail = BitmapFactory.decodeResource(getResources(),
