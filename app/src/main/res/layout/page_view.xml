@@ -21,12 +21,12 @@
         android:id="@+id/task_view_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <include layout="@layout/page_view_header" />
 
         <com.example.a10330.pageviewtest.views.PageViewThumbnail
             android:id="@+id/task_view_thumbnail"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <include layout="@layout/page_view_header" />
     </FrameLayout>
 </com.example.a10330.pageviewtest.views.PageView>

@@ -148,11 +148,11 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
     /**
      * Requests that the views be synchronized with the model
      */
-    void requestSynchronizeStackViewsWithModel() {
+    private void requestSynchronizeStackViewsWithModel() {
         requestSynchronizeStackViewsWithModel(0);
     }
 
-    void requestSynchronizeStackViewsWithModel(int duration) {
+    private void requestSynchronizeStackViewsWithModel(int duration) {
         if (!mStackViewsDirty) {
             invalidate();
             mStackViewsDirty = true;
@@ -259,7 +259,7 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
     /**
      * Synchronizes the views with the model
      */
-    boolean synchronizeStackViewsWithModel() {
+    private boolean synchronizeStackViewsWithModel() {
         if (mStackViewsDirty) {
             // Get all the task transforms
             ArrayList<T> data = mCallback.getData();
@@ -288,10 +288,9 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
                 T key = data.get(i);
                 PageViewTransform transform = mCurrentTaskTransforms.get(i);
                 PageView tv = mTmpTaskViewMap.get(key);
-
                 if (tv == null) {
                     // TODO Check
-                    tv = mViewPool.pickUpViewFromPool(key, key);
+                    tv = mViewPool.pickUpViewFromPool(key, key);//回调了方法导致加载了多个PageView
 
                     if (mStackViewsAnimationDuration > 0) {
                         // For items in the list, put them in start animating them from the
@@ -304,7 +303,6 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
                         tv.updateViewPropertiesToTaskTransform(mTmpTransform, 0);
                     }
                 }
-
                 // Animate the task into place
                 tv.updateViewPropertiesToTaskTransform(mCurrentTaskTransforms.get(i),
                         mStackViewsAnimationDuration, mRequestUpdateClippingListener);
@@ -589,12 +587,12 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
+        mPageStackBounds.set(0,0,width,height);
 
-        Rect _PageStackBounds = new Rect();
-        mConfig.getPageStackBounds(width, height, mConfig.systemInsets.top,
-                mConfig.systemInsets.right, _PageStackBounds);
+        /*Rect pageStackBounds1 = new Rect();
+        mConfig.getPageStackBounds(width, height,pageStackBounds1);
 
-        setStackInsetRect(_PageStackBounds);
+        setStackInsetRect(pageStackBounds1);*/
 
         // Compute our stack/task rects
         Rect PageStackBounds = new Rect(mPageStackBounds);
@@ -655,14 +653,14 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
 
         if (mAwaitingFirstLayout) {
             mAwaitingFirstLayout = false;
-            onFirstLayout();
+            onFirstLayout();//好像没什么用，只是小差差没有了
         }
     }
 
     /**
      * Handler for the first layout.
      */
-    void onFirstLayout() {
+    private void onFirstLayout() {
         int offscreenY = mLayoutAlgorithm.mViewRect.bottom -
                 (mLayoutAlgorithm.mTaskRect.top - mLayoutAlgorithm.mViewRect.top);
 

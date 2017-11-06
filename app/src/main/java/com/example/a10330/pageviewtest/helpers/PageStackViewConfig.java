@@ -36,22 +36,22 @@ public class PageStackViewConfig {
     /**
      * Filtering
      */
-    public int filteringCurrentViewsAnimDuration;
-    public int filteringNewViewsAnimDuration;
+//    public int filteringCurrentViewsAnimDuration;
+//    public int filteringNewViewsAnimDuration;
 
     /**
      * Insets
      */
     public Rect systemInsets = new Rect();
-    public Rect displayRect = new Rect();
+//    public Rect displayRect = new Rect();
 
     /**
      * Layout
      */
-    boolean isLandscape;
+//    boolean isLandscape;
 
     /**
-     * Task stack
+     * Page stack
      */
     public int pageStackScrollDuration;
     public int pageStackMaxDim;
@@ -62,7 +62,7 @@ public class PageStackViewConfig {
     /**
      * Transitions
      */
-    public int transitionEnterFromAppDelay;
+//    public int transitionEnterFromAppDelay;
     public int transitionEnterFromHomeDelay;
 
     /**
@@ -72,24 +72,24 @@ public class PageStackViewConfig {
     public int pageViewEnterFromHomeDuration;
     public int pageViewEnterFromHomeStaggerDelay;
     public int pageViewExitToAppDuration;
-    public int pageViewExitToHomeDuration;
+//    public int pageViewExitToHomeDuration;
     public int pageViewRemoveAnimDuration;
     public int pageViewRemoveAnimTranslationXPx;
     public int pageViewTranslationZMinPx;
     public int pageViewTranslationZMaxPx;
     public int pageViewRoundedCornerRadiusPx;
     public int pageViewHighlightPx;
-    public int pageViewAffiliateGroupEnterOffsetPx;
+//    public int pageViewAffiliateGroupEnterOffsetPx;
     public float pageViewThumbnailAlpha;
 
     /**
      * Task bar colors
      */
-    public int taskBarViewDefaultBackgroundColor;
+//    public int taskBarViewDefaultBackgroundColor;
     public int taskBarViewLightTextColor;
-    public int taskBarViewDarkTextColor;
+//    public int taskBarViewDarkTextColor;
     public int taskBarViewHighlightColor;
-    public float taskBarViewAffiliationColorMinAlpha;
+//    public float taskBarViewAffiliationColorMinAlpha;
 
     /**
      * Task bar size & animations
@@ -100,7 +100,7 @@ public class PageStackViewConfig {
     /**
      * Nav bar scrim
      */
-    public int navBarScrimEnterDuration;
+//    public int navBarScrimEnterDuration;
 
     /**
      * Launch states
@@ -114,14 +114,14 @@ public class PageStackViewConfig {
      * Misc *
      */
     public boolean useHardwareLayers;
-    public int altTabKeyDelay;
+//    public int altTabKeyDelay;
     public boolean fakeShadows;
 
     /**
      * Dev options and global settings
      */
-    public boolean debugModeEnabled;
-    public int svelteLevel;
+//    public boolean debugModeEnabled;
+//    public int svelteLevel;
 
     /**
      * Private constructor
@@ -154,7 +154,7 @@ public class PageStackViewConfig {
             sPrevConfigurationHashCode = configHashCode;
         }
 
-        sInstance.updateOnReinitialize(context);
+//        sInstance.updateOnReinitialize(context);
         return sInstance;
     }
 
@@ -171,18 +171,18 @@ public class PageStackViewConfig {
     void update(Context context) {
         SharedPreferences settings = context.getSharedPreferences(context.getPackageName(), 0);
         Resources res = context.getResources();
-        DisplayMetrics dm = res.getDisplayMetrics();
+//        DisplayMetrics dm = res.getDisplayMetrics();
         // Debug mode
-        debugModeEnabled = settings.getBoolean(DVConstants.Values.App.Key_DebugModeEnabled, false);
+//        debugModeEnabled = settings.getBoolean(DVConstants.Values.App.Key_DebugModeEnabled, false);
         // Layout
-        isLandscape = res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+//        isLandscape = res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         // Insets
-        displayRect.set(0, 0, dm.widthPixels, dm.heightPixels);
+//        displayRect.set(0, 0, dm.widthPixels, dm.heightPixels);
         // Animations
         animationPxMovementPerSecond = res.getDimensionPixelSize(R.dimen.animation_movement_in_dps_per_second);
         // Filtering
-        filteringCurrentViewsAnimDuration = res.getInteger(R.integer.filter_animate_current_views_duration);
-        filteringNewViewsAnimDuration = res.getInteger(R.integer.filter_animate_new_views_duration);
+//        filteringCurrentViewsAnimDuration = res.getInteger(R.integer.filter_animate_current_views_duration);
+//        filteringNewViewsAnimDuration = res.getInteger(R.integer.filter_animate_new_views_duration);
         // Task stack
         pageStackScrollDuration = res.getInteger(R.integer.animate_deck_scroll_duration);
         TypedValue widthPaddingPctValue = new TypedValue();
@@ -195,7 +195,7 @@ public class PageStackViewConfig {
         pageStackTopPaddingPx = res.getDimensionPixelSize(R.dimen.deck_top_padding);
 
         // Transition
-        transitionEnterFromAppDelay =
+//        transitionEnterFromAppDelay =
                 res.getInteger(R.integer.enter_from_app_transition_duration);
         transitionEnterFromHomeDelay =
                 res.getInteger(R.integer.enter_from_home_transition_duration);
@@ -205,40 +205,40 @@ public class PageStackViewConfig {
         pageViewEnterFromHomeDuration = res.getInteger(R.integer.task_enter_from_home_duration);
         pageViewEnterFromHomeStaggerDelay = res.getInteger(R.integer.task_enter_from_home_stagger_delay);
         pageViewExitToAppDuration = res.getInteger(R.integer.task_exit_to_app_duration);
-        pageViewExitToHomeDuration = res.getInteger(R.integer.task_exit_to_home_duration);
+//        pageViewExitToHomeDuration = res.getInteger(R.integer.task_exit_to_home_duration);
         pageViewRemoveAnimDuration = res.getInteger(R.integer.animate_task_view_remove_duration);
         pageViewRemoveAnimTranslationXPx = res.getDimensionPixelSize(R.dimen.task_view_remove_anim_translation_x);
         pageViewRoundedCornerRadiusPx = res.getDimensionPixelSize(R.dimen.task_view_rounded_corners_radius);
         pageViewHighlightPx = res.getDimensionPixelSize(R.dimen.task_view_highlight);
         pageViewTranslationZMinPx = res.getDimensionPixelSize(R.dimen.task_view_z_min);
         pageViewTranslationZMaxPx = res.getDimensionPixelSize(R.dimen.task_view_z_max);
-        pageViewAffiliateGroupEnterOffsetPx = res.getDimensionPixelSize(R.dimen.task_view_affiliate_group_enter_offset);
+//        pageViewAffiliateGroupEnterOffsetPx = res.getDimensionPixelSize(R.dimen.task_view_affiliate_group_enter_offset);
         TypedValue thumbnailAlphaValue = new TypedValue();
         res.getValue(R.dimen.task_view_thumbnail_alpha, thumbnailAlphaValue, true);
         pageViewThumbnailAlpha = thumbnailAlphaValue.getFloat();
 
         // Task bar colors
-        taskBarViewDefaultBackgroundColor =
+//        taskBarViewDefaultBackgroundColor =
                 res.getColor(R.color.task_bar_default_background_color);
         taskBarViewLightTextColor =
                 res.getColor(R.color.task_bar_light_text_color);
-        taskBarViewDarkTextColor =
+//        taskBarViewDarkTextColor =
                 res.getColor(R.color.task_bar_dark_text_color);
         taskBarViewHighlightColor =
                 res.getColor(R.color.task_bar_highlight_color);
         TypedValue affMinAlphaPctValue = new TypedValue();
         res.getValue(R.dimen.task_affiliation_color_min_alpha_percentage, affMinAlphaPctValue, true);
-        taskBarViewAffiliationColorMinAlpha = affMinAlphaPctValue.getFloat();
+//        taskBarViewAffiliationColorMinAlpha = affMinAlphaPctValue.getFloat();
         // Task bar size & animations
         taskBarHeight = res.getDimensionPixelSize(R.dimen.deck_child_header_bar_height);
         taskBarDismissDozeDelaySeconds = res.getInteger(R.integer.task_bar_dismiss_delay_seconds);
         // Nav bar scrim
-        navBarScrimEnterDuration = res.getInteger(R.integer.nav_bar_scrim_enter_duration);
+//        navBarScrimEnterDuration = res.getInteger(R.integer.nav_bar_scrim_enter_duration);
         // Misc
         useHardwareLayers = res.getBoolean(R.bool.config_use_hardware_layers);
-        altTabKeyDelay = res.getInteger(R.integer.deck_alt_tab_key_delay);
+//        altTabKeyDelay = res.getInteger(R.integer.deck_alt_tab_key_delay);
         fakeShadows = res.getBoolean(R.bool.config_fake_shadows);
-        svelteLevel = res.getInteger(R.integer.deck_svelte_level);
+//        svelteLevel = res.getInteger(R.integer.deck_svelte_level);
     }
     /**
      * Updates the system insets
@@ -256,8 +256,7 @@ public class PageStackViewConfig {
      * Returns the task stack bounds in the current orientation. These bounds do not account for
      * the system insets.
      */
-    public void getPageStackBounds(int windowWidth, int windowHeight, int topInset, int rightInset,
-                                   Rect pageStackBounds) {
+    public void getPageStackBounds(int windowWidth, int windowHeight, Rect pageStackBounds) {
         pageStackBounds.set(0, 0, windowWidth, windowHeight);
     }
 }

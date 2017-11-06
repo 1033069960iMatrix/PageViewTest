@@ -149,7 +149,7 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
         mThumbnailView.updateClipToTaskBar(mHeaderView);
     }
 
-    @Override
+  /*  @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
@@ -171,7 +171,7 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
                 MeasureSpec.makeMeasureSpec(widthWithoutPadding, MeasureSpec.EXACTLY));
         setMeasuredDimension(width, height);
         invalidateOutline();
-    }
+    }*/
 
     /**
      * Synchronizes this view's properties with the task's transform
