@@ -172,6 +172,7 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
         setMeasuredDimension(width, height);
         invalidateOutline();
     }*/
+  //不用重写也行
 
     /**
      * Synchronizes this view's properties with the task's transform
