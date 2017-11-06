@@ -86,7 +86,7 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
 
     public void initialize(Callback<T> callback) {
         mCallback = callback;
-        requestLayout();
+//        requestLayout();
 
         mViewPool = new ViewPool<PageView<T>, T>(getContext(), this);
         mInflater = LayoutInflater.from(getContext());
