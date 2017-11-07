@@ -57,6 +57,7 @@ public class PageStackViewLayoutAlgorithm<T> {
         mConfig = config;
         // Precompute the path
         initializeCurve();
+        int m=1;
     }
     /**
      * Computes the stack and task rects
@@ -88,8 +89,7 @@ public class PageStackViewLayoutAlgorithm<T> {
      * Computes the minimum and maximum scroll progress values.  This method may be called before
      * the RecentsConfiguration is set, so we need to pass in the alt-tab state.
      */
-    void computeMinMaxScroll(ArrayList<T> data, boolean launchedWithAltTab,
-                             boolean launchedFromHome) {
+    void computeMinMaxScroll(ArrayList<T> data, boolean launchedWithAltTab, boolean launchedFromHome) {
         // Clear the progress map
         mTaskProgressMap.clear();
 
@@ -123,7 +123,7 @@ public class PageStackViewLayoutAlgorithm<T> {
                 // TODO: Might need adjustments
                 //float pPeek = task.group.isFrontMostTask(task) ?
                 //pBetweenAffiliateOffset : pWithinAffiliateOffset;
-                pAtFrontMostCardTop += pBetweenAffiliateOffset;
+                pAtFrontMostCardTop += pBetweenAffiliateOffset;//这个值我给改成/2后能控制每页显示的卡片数
             }
         }
 
@@ -206,8 +206,7 @@ public class PageStackViewLayoutAlgorithm<T> {
             transformOut.reset();
             return transformOut;
         }
-        return getStackTransform(mTaskProgressMap.get(key), stackScroll, transformOut,
-                prevTransform);
+        return getStackTransform(mTaskProgressMap.get(key), stackScroll, transformOut, prevTransform);
     }
 
     /**
@@ -224,7 +223,7 @@ public class PageStackViewLayoutAlgorithm<T> {
             transformOut.rect.set(mTaskRect);
             return transformOut;
         }
-        // The check for the top is trickier, since we want to show the next task if it is at all
+        // The check for the top is trickier狡猾的, since we want to show the next task if it is at all
         // visible, even if p < 0.
         if (pTaskRelative < 0f) {
             if (prevTransform != null && Float.compare(prevTransform.p, 0f) <= 0) {
@@ -280,7 +279,7 @@ public class PageStackViewLayoutAlgorithm<T> {
             dx[xStep] = (float) Math.sqrt(Math.pow(fx[xStep] - fx[xStep - 1], 2) + Math.pow(step, 2));
             pLength += dx[xStep];
         }
-        // Approximate p(x), a function of cumulative progress with x, normalized to 0..1
+        // Approximate近似的 p(x), a function of cumulative累计的 progress with x, normalized to 0..1
         float p = 0;
         px[0] = 0f;
         px[PrecisionSteps] = 1f;

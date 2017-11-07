@@ -18,7 +18,7 @@
     <dimen name="task_view_remove_anim_translation_x">100dp</dimen>
 
     <!-- The radius of the rounded corners on a task view. -->
-    <dimen name="task_view_rounded_corners_radius">20dp</dimen>
+    <dimen name="task_view_rounded_corners_radius">10dp</dimen>
 
     <!-- The amount of highlight to make on each task view. -->
     <dimen name="task_view_highlight">1.5dp</dimen>

@@ -34,17 +34,12 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
      * The pageView callbacks
      */
     interface PageViewCallbacks<T> {
-        public void onPageViewAppIconClicked(PageView dcv);
-
-        public void onPageViewAppInfoClicked(PageView dcv);
-
-        public void onPageViewClicked(PageView<T> dcv, T key);
-
-        public void onPageViewDismissed(PageView<T> dcv);
-
-        public void onPageViewClipStateChanged(PageView dcv);
-
-        public void onPageViewFocusChanged(PageView<T> dcv, boolean focused);
+        void onPageViewAppIconClicked(PageView dcv);
+        void onPageViewAppInfoClicked(PageView dcv);
+        void onPageViewClicked(PageView<T> dcv, T key);
+        void onPageViewDismissed(PageView<T> dcv);
+        void onPageViewClipStateChanged(PageView dcv);
+        void onPageViewFocusChanged(PageView<T> dcv, boolean focused);
     }
 
     PageStackViewConfig mConfig;
@@ -176,14 +171,14 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
     /**
      * Synchronizes this view's properties with the task's transform
      */
-    void updateViewPropertiesToTaskTransform(PageViewTransform toTransform, int duration) {
-        updateViewPropertiesToTaskTransform(toTransform, duration, null);
+    void updateViewPropertiesToPageTransform(PageViewTransform toTransform, int duration) {
+        updateViewPropertiesToPageTransform(toTransform, duration, null);
     }
 
-    void updateViewPropertiesToTaskTransform(PageViewTransform toTransform, int duration,
+    void updateViewPropertiesToPageTransform(PageViewTransform toTransform, int duration,
                                              ValueAnimator.AnimatorUpdateListener updateCallback) {
         // Apply the transform
-        toTransform.applyTopageView(this, duration, mConfig.fastOutSlowInInterpolator, false,
+        toTransform.applyToPageView(this, duration, mConfig.fastOutSlowInInterpolator, false,
                 !mConfig.fakeShadows, updateCallback);
 
         // Update the task progress

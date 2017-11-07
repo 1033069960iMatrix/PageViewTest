@@ -11,7 +11,7 @@ import android.view.animation.Interpolator;
  */
 
 public class PageViewTransform {
-    public int startDelay = 0;
+    private int startDelay = 0;
     public int translationY = 0;
     public float translationZ = 0;
     public float scale = 1f;
@@ -40,26 +40,26 @@ public class PageViewTransform {
     /**
      * Convenience functions to compare against current property values
      */
-    public boolean hasAlphaChangedFrom(float v) {
+    private boolean hasAlphaChangedFrom(float v) {
         return (Float.compare(alpha, v) != 0);
     }
 
-    public boolean hasScaleChangedFrom(float v) {
+    private boolean hasScaleChangedFrom(float v) {
         return (Float.compare(scale, v) != 0);
     }
 
-    public boolean hasTranslationYChangedFrom(float v) {
+    private boolean hasTranslationYChangedFrom(float v) {
         return (Float.compare(translationY, v) != 0);
     }
 
-    public boolean hasTranslationZChangedFrom(float v) {
+    private boolean hasTranslationZChangedFrom(float v) {
         return (Float.compare(translationZ, v) != 0);
     }
 
     /**
      * Applies this transform to a view.
      */
-    public void applyTopageView(View v, int duration, Interpolator interp, boolean allowLayers,
+    public void applyToPageView(View v, int duration, Interpolator interp, boolean allowLayers,
                                 boolean allowShadows, ValueAnimator.AnimatorUpdateListener updateCallback) {
         // Check to see if any properties have changed, and update the task view
         if (duration > 0) {
@@ -74,7 +74,7 @@ public class PageViewTransform {
                 anim.translationZ(translationZ);
             }
             if (hasScaleChangedFrom(v.getScaleX())) {
-                anim.scaleX(scale)
+                anim.scaleX(scale)//如果去掉x方向不会变化，就像新版本安卓一样
                         .scaleY(scale);
                 requiresLayers = true;
             }
@@ -104,7 +104,7 @@ public class PageViewTransform {
                 v.setTranslationZ(translationZ);
             }
             if (hasScaleChangedFrom(v.getScaleX())) {
-                v.setScaleX(scale);
+                v.setScaleX(scale);//如果去掉x方向不会变化，就像新版本安卓一样
                 v.setScaleY(scale);
             }
             if (hasAlphaChangedFrom(v.getAlpha())) {

@@ -300,12 +300,12 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
                         } else {
                             mLayoutAlgorithm.getStackTransform(1f, 0f, mTmpTransform, null);
                         }
-                        tv.updateViewPropertiesToTaskTransform(mTmpTransform, 0);
+                        tv.updateViewPropertiesToPageTransform(mTmpTransform, 0);
                     }
                 }
                 // Animate the task into place
 //                mStackViewsAnimationDuration=500;//把数值改大发现动画有问题
-                tv.updateViewPropertiesToTaskTransform(mCurrentTaskTransforms.get(i),
+                tv.updateViewPropertiesToPageTransform(mCurrentTaskTransforms.get(i),
                         mStackViewsAnimationDuration, mRequestUpdateClippingListener);
             }
 
@@ -597,8 +597,7 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
         // Compute our stack/task rects
         Rect PageStackBounds = new Rect(mPageStackBounds);
         PageStackBounds.bottom -= mConfig.systemInsets.bottom;
-        computeRects(width, height, PageStackBounds, mConfig.launchedWithAltTab,
-                mConfig.launchedFromHome);
+        computeRects(width, height, PageStackBounds, mConfig.launchedWithAltTab, mConfig.launchedFromHome);
 
         // If this is the first layout, then scroll to the front of the stack and synchronize the
         // stack views immediately to load all the views
