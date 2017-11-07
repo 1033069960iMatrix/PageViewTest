@@ -21,7 +21,6 @@ import java.util.HashMap;
 public class PageStackViewLayoutAlgorithm<T> {
     // These are all going to change
     private static final float StackPeekMinScale = 0.8f; // The min scale of the last card in the peek area
-
     // A report of the visibility state of the stack
     /*public class VisibilityReport {
         public int numVisibleTasks;
@@ -35,37 +34,30 @@ public class PageStackViewLayoutAlgorithm<T> {
             numVisibleThumbnails = thumbnails;
         }
     }*/
-
     private PageStackViewConfig mConfig;
-
     // The various rects that define the stack view
     Rect mViewRect = new Rect();
     Rect mStackVisibleRect = new Rect();
     Rect mTaskRect = new Rect();
     private Rect mStackRect = new Rect();
-
     // The min/max scroll progress
     float mMinScrollP;
     float mMaxScrollP;
     float mInitialScrollP;
-    private int mWithinAffiliationOffset;
+//    private int mWithinAffiliationOffset;
     private int mBetweenAffiliationOffset;
     private HashMap<T, Float> mTaskProgressMap = new HashMap<T, Float>();
-
     // Log function
-    static final float XScale = 1.75f;  // The large the XScale, the longer the flat area of the curve
-    static final float LogBase = 3000;
-    static final int PrecisionSteps = 250;
-    static float[] xp;
-    static float[] px;
-
-    public PageStackViewLayoutAlgorithm(PageStackViewConfig config) {
+    private static final float XScale = 1.75f;  // The large the XScale, the longer the flat area of the curve
+    private static final float LogBase = 3000;
+    private static final int PrecisionSteps = 250;
+    private static float[] xp;
+    private static float[] px;
+    PageStackViewLayoutAlgorithm(PageStackViewConfig config) {
         mConfig = config;
-
         // Precompute the path
         initializeCurve();
     }
-
     /**
      * Computes the stack and task rects
      */
@@ -88,7 +80,7 @@ public class PageStackViewLayoutAlgorithm<T> {
 
         // Update the affiliation offsets
         float visibleTaskPct = 0.5f;
-        mWithinAffiliationOffset = mConfig.taskBarHeight;
+//        mWithinAffiliationOffset = mConfig.taskBarHeight;
         mBetweenAffiliationOffset = (int) (visibleTaskPct * mTaskRect.height());
     }
 
@@ -268,11 +260,10 @@ public class PageStackViewLayoutAlgorithm<T> {
     /**
      * Initializes the curve.
      */
-    public static void initializeCurve() {
+    private static void initializeCurve() {
         if (xp != null && px != null) return;
         xp = new float[PrecisionSteps + 1];
         px = new float[PrecisionSteps + 1];
-
         // Approximate f(x)
         float[] fx = new float[PrecisionSteps + 1];
         float step = 1f / PrecisionSteps;
@@ -325,21 +316,21 @@ public class PageStackViewLayoutAlgorithm<T> {
     /**
      * Reverses and scales out x.
      */
-    static float reverse(float x) {
+    private static float reverse(float x) {
         return (-x * XScale) + 1;
     }
 
     /**
      * The log function describing the curve.
      */
-    static float logFunc(float x) {
+    private static float logFunc(float x) {
         return 1f - (float) (Math.pow(LogBase, reverse(x))) / (LogBase);
     }
 
     /**
      * Converts from the progress along the curve to a screen coordinate.
      */
-    int curveProgressToScreenY(float p) {
+    private int curveProgressToScreenY(float p) {
         if (p < 0 || p > 1) return mStackVisibleRect.top + (int) (p * mStackVisibleRect.height());
         float pIndex = p * PrecisionSteps;
         int pFloorIndex = (int) Math.floor(pIndex);
@@ -356,12 +347,11 @@ public class PageStackViewLayoutAlgorithm<T> {
     /**
      * Converts from the progress along the curve to a scale.
      */
-    float curveProgressToScale(float p) {
+    private float curveProgressToScale(float p) {
         if (p < 0) return StackPeekMinScale;
         if (p > 1) return 1f;
         float scaleRange = (1f - StackPeekMinScale);
-        float scale = StackPeekMinScale + (p * scaleRange);
-        return scale;
+        return StackPeekMinScale + (p * scaleRange);
     }
 
     /**
