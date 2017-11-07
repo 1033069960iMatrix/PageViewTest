@@ -20,7 +20,6 @@ import android.view.animation.PathInterpolator;
 import android.widget.FrameLayout;
 
 import com.example.a10330.pageviewtest.R;
-import com.example.a10330.pageviewtest.helpers.FakeShadowDrawable;
 import com.example.a10330.pageviewtest.helpers.PageStackViewConfig;
 import com.example.a10330.pageviewtest.helpers.PageViewTransform;
 import com.example.a10330.pageviewtest.utilities.DVConstants;
@@ -102,9 +101,9 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
         mViewBounds = new AnimateablePageViewBounds(this, mConfig.pageViewRoundedCornerRadiusPx);
         setTaskProgress(getTaskProgress());
         setDim(getDim());
-        if (mConfig.fakeShadows) {
+        /*if (mConfig.fakeShadows) {
             setBackground(new FakeShadowDrawable(context.getResources(), mConfig));
-        }
+        }*/
         setOutlineProvider(mViewBounds);
     }
 

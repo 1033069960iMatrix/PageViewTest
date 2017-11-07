@@ -108,7 +108,6 @@ public class PageStackViewConfig {
     public boolean launchedWithAltTab;
     public boolean launchedFromAppWithThumbnail;
     public boolean launchedFromHome;
-    public boolean launchedReusepageStackViews;
     public boolean launchedHasConfigurationChanged;
     /**
      * Misc *

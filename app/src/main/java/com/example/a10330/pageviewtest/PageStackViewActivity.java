@@ -89,7 +89,7 @@ public class PageStackViewActivity extends AppCompatActivity {
         }
 
         // Callback implementation
-        PageStackView.Callback<Datum> PageStackViewCallback = new PageStackView.Callback<Datum>() {
+        PageStackView.Callback<Datum> pageStackViewCallback = new PageStackView.Callback<Datum>() {
             @Override
             public ArrayList<Datum> getData() {
                 return mEntries;
@@ -126,7 +126,7 @@ public class PageStackViewActivity extends AppCompatActivity {
             }
         };
 
-        mPageStackView.initialize(PageStackViewCallback);
+        mPageStackView.initialize(pageStackViewCallback);
 
         if (scrollToChildIndex != -1) {
             mPageStackView.post(new Runnable() {

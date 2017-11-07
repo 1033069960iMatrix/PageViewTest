@@ -27,33 +27,33 @@ import com.example.a10330.pageviewtest.R;
  */
 public class FakeShadowDrawable extends Drawable {
     // used to calculate content padding
-    final static double COS_45 = Math.cos(Math.toRadians(45));
+    private final static double COS_45 = Math.cos(Math.toRadians(45));
 
-    final static float SHADOW_MULTIPLIER = 1.5f;
+    private final static float SHADOW_MULTIPLIER = 1.5f;
 
-    final float mInsetShadow; // extra shadow to avoid gaps between card and shadow
+    private final float mInsetShadow; // extra shadow to avoid gaps between card and shadow
 
-    Paint mCornerShadowPaint;
+    private Paint mCornerShadowPaint;
 
-    Paint mEdgeShadowPaint;
+    private Paint mEdgeShadowPaint;
 
-    final RectF mCardBounds;
+    private final RectF mCardBounds;
 
-    float mCornerRadius;
+    private float mCornerRadius;
 
-    Path mCornerShadowPath;
+    private Path mCornerShadowPath;
 
     // updated value with inset
-    float mMaxShadowSize;
+    private float mMaxShadowSize;
 
     // actual value set by developer
-    float mRawMaxShadowSize;
+    private float mRawMaxShadowSize;
 
     // multiplied value to account for shadow offset
-    float mShadowSize;
+    private float mShadowSize;
 
     // actual value set by developer
-    float mRawShadowSize;
+    private float mRawShadowSize;
 
     private boolean mDirty = true;
 

@@ -20,37 +20,37 @@ import java.util.HashMap;
  */
 public class PageStackViewLayoutAlgorithm<T> {
     // These are all going to change
-    static final float StackPeekMinScale = 0.8f; // The min scale of the last card in the peek area
+    private static final float StackPeekMinScale = 0.8f; // The min scale of the last card in the peek area
 
     // A report of the visibility state of the stack
-    public class VisibilityReport {
+    /*public class VisibilityReport {
         public int numVisibleTasks;
         public int numVisibleThumbnails;
 
-        /**
+        *//**
          * Package level ctor
-         */
+         *//*
         VisibilityReport(int tasks, int thumbnails) {
             numVisibleTasks = tasks;
             numVisibleThumbnails = thumbnails;
         }
-    }
+    }*/
 
-    PageStackViewConfig mConfig;
+    private PageStackViewConfig mConfig;
 
     // The various rects that define the stack view
-    public Rect mViewRect = new Rect();
+    Rect mViewRect = new Rect();
     Rect mStackVisibleRect = new Rect();
-    Rect mStackRect = new Rect();
     Rect mTaskRect = new Rect();
+    private Rect mStackRect = new Rect();
 
     // The min/max scroll progress
     float mMinScrollP;
     float mMaxScrollP;
     float mInitialScrollP;
-    int mWithinAffiliationOffset;
-    int mBetweenAffiliationOffset;
-    HashMap<T, Float> mTaskProgressMap = new HashMap<T, Float>();
+    private int mWithinAffiliationOffset;
+    private int mBetweenAffiliationOffset;
+    private HashMap<T, Float> mTaskProgressMap = new HashMap<T, Float>();
 
     // Log function
     static final float XScale = 1.75f;  // The large the XScale, the longer the flat area of the curve
@@ -110,13 +110,6 @@ public class PageStackViewLayoutAlgorithm<T> {
         // Note that we should account for the scale difference of the offsets at the screen bottom
         int taskHeight = mTaskRect.height();
         float pAtBottomOfStackRect = screenYToCurveProgress(mStackVisibleRect.bottom);
-        float pWithinAffiliateTop = screenYToCurveProgress(mStackVisibleRect.bottom -
-                mWithinAffiliationOffset);
-        float scale = curveProgressToScale(pWithinAffiliateTop);
-        int scaleYOffset = (int) (((1f - scale) * taskHeight) / 2);
-        pWithinAffiliateTop = screenYToCurveProgress(mStackVisibleRect.bottom -
-                mWithinAffiliationOffset + scaleYOffset);
-        float pWithinAffiliateOffset = pAtBottomOfStackRect - pWithinAffiliateTop;
         float pBetweenAffiliateOffset = pAtBottomOfStackRect -
                 screenYToCurveProgress(mStackVisibleRect.bottom - mBetweenAffiliationOffset);
         float pTaskHeightOffset = pAtBottomOfStackRect -
@@ -126,8 +119,7 @@ public class PageStackViewLayoutAlgorithm<T> {
                         mStackRect.bottom));
 
         // Update the task offsets
-        float pAtBackMostCardTop = 0.5f;
-        float pAtFrontMostCardTop = pAtBackMostCardTop;
+        float pAtFrontMostCardTop = 0.5f;
         int taskCount = data.size();
         for (int i = 0; i < taskCount; i++) {
             //Task task = tasks.get(i);
@@ -139,8 +131,7 @@ public class PageStackViewLayoutAlgorithm<T> {
                 // TODO: Might need adjustments
                 //float pPeek = task.group.isFrontMostTask(task) ?
                 //pBetweenAffiliateOffset : pWithinAffiliateOffset;
-                float pPeek = pBetweenAffiliateOffset;
-                pAtFrontMostCardTop += pPeek;
+                pAtFrontMostCardTop += pBetweenAffiliateOffset;
             }
         }
 
@@ -159,7 +150,7 @@ public class PageStackViewLayoutAlgorithm<T> {
      * Computes the maximum number of visible tasks and thumbnails.  Requires that
      * computeMinMaxScroll() is called first.
      */
-    public VisibilityReport computeStackVisibilityReport(ArrayList<T> data) {
+/*    public VisibilityReport computeStackVisibilityReport(ArrayList<T> data) {
         if (data.size() <= 1) {
             return new VisibilityReport(1, 1);
         }
@@ -210,7 +201,7 @@ public class PageStackViewLayoutAlgorithm<T> {
             }
         }
         return new VisibilityReport(numVisibleTasks, numVisibleThumbnails);
-    }
+    }*/
 
     /**
      * Update/get the transform

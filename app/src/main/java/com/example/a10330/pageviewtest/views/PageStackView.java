@@ -111,7 +111,7 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
     /**
      * Resets this PageStackView for reuse.
      */
-    void reset() {
+/*    void reset() {
         // Reset the focused task
         resetFocusedTask();
 
@@ -143,7 +143,7 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
             mUIDozeTrigger.resetTrigger();
         }
         mStackScroller.reset();
-    }
+    }*/
 
     /**
      * Requests that the views be synchronized with the model
@@ -304,6 +304,7 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
                     }
                 }
                 // Animate the task into place
+//                mStackViewsAnimationDuration=500;//把数值改大发现动画有问题
                 tv.updateViewPropertiesToTaskTransform(mCurrentTaskTransforms.get(i),
                         mStackViewsAnimationDuration, mRequestUpdateClippingListener);
             }
@@ -488,7 +489,7 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
         mFocusedTaskIndex = -1;
     }
 
-    @Override
+ /*   @Override
     public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
         super.onInitializeAccessibilityEvent(event);
         int childCount = getChildCount();
@@ -501,7 +502,7 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
         event.setItemCount(mCallback.getData().size());
         event.setScrollY(mStackScroller.mScroller.getCurrY());
         event.setMaxScrollY(mStackScroller.progressToScrollRange(mLayoutAlgorithm.mMaxScrollP));
-    }
+    }*/
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -517,15 +518,14 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
     public boolean onGenericMotionEvent(MotionEvent ev) {
         return mTouchHandler.onGenericMotionEvent(ev);
     }
-
     @Override
     public void computeScroll() {
-        mStackScroller.computeScroll();
+        mStackScroller.computeScroll();//手指松开后继续滑动就靠它了
         // Synchronize the views
         synchronizeStackViewsWithModel();
         clipTaskViews();
         // Notify accessibility
-        sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SCROLLED);
+//        sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SCROLLED);
     }
 
     /**
@@ -575,9 +575,9 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
      * Computes the maximum number of visible tasks and thumbnails.  Requires that
      * updateMinMaxScrollForStack() is called first.
      */
-    public PageStackViewLayoutAlgorithm.VisibilityReport computeStackVisibilityReport() {
+    /*public PageStackViewLayoutAlgorithm.VisibilityReport computeStackVisibilityReport() {
         return mLayoutAlgorithm.computeStackVisibilityReport(mCallback.getData());
-    }
+    }*/
 
     /**
      * This is called with the full window width and height to allow stack view children to
@@ -607,6 +607,7 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
             requestSynchronizeStackViewsWithModel();
             synchronizeStackViewsWithModel();
         }
+        //TODO: 以后去掉注释 跟布局没关系，只是一开始调到前几个显示
 
         // Measure each of the TaskViews
         int childCount = getChildCount();
@@ -634,17 +635,17 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
      * search bar height in portrait (but including the search bar width in landscape, since we want
      * to draw under it.
      */
-    @Override
+    @Override//查看后如果没重写这个方法只会导致画面整体左移，所以其他的东西应该不是在这里实现的，先给注释掉
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         // Layout each of the children
         int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
             PageView tv = (PageView) getChildAt(i);
-           /* if (tv.getBackground() != null) {
+            if (tv.getBackground() != null) {
                 tv.getBackground().getPadding(mTmpRect);
             } else {
                 mTmpRect.setEmpty();
-            }*/
+            }
             tv.layout(mLayoutAlgorithm.mTaskRect.left - mTmpRect.left,
                     mLayoutAlgorithm.mTaskRect.top - mTmpRect.top,
                     mLayoutAlgorithm.mTaskRect.right + mTmpRect.right,
