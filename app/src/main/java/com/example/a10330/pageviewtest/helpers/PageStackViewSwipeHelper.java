@@ -22,6 +22,22 @@ import android.view.animation.LinearInterpolator;
  * events and translates / fades / animates the view as it is dismissed.
  */
 public class PageStackViewSwipeHelper {
+
+    public interface Callback {
+        View getChildAtPosition(MotionEvent ev);
+
+        boolean canChildBeDismissed(View v);
+
+        void onBeginDrag(View v);
+
+        void onSwipeChanged(View v, float delta);
+
+        void onChildDismissed(View v);
+
+        void onSnapBackCompleted(View v);
+
+        void onDragCancelled(View v);
+    }
     static final String TAG = "PageStackViewSwipeHelper";
     private static final boolean SLOW_ANIMATIONS = false; // DEBUG;
     private static final boolean CONSTRAIN_SWIPE = true;
@@ -45,7 +61,7 @@ public class PageStackViewSwipeHelper {
     private float mMinAlpha = 0f;
 
     private float mPagingTouchSlop;
-    Callback mCallback;
+    private Callback mCallback;
     private int mSwipeDirection;
     private VelocityTracker mVelocityTracker;
 
@@ -56,8 +72,8 @@ public class PageStackViewSwipeHelper {
     private boolean mCanCurrViewBeDimissed;
     private float mDensityScale;
 
-    public boolean mAllowSwipeTowardsStart = true;
-    public boolean mAllowSwipeTowardsEnd = true;
+    private boolean mAllowSwipeTowardsStart = true;
+    private boolean mAllowSwipeTowardsEnd = true;
     private boolean mRtl;
 
     public PageStackViewSwipeHelper(int swipeDirection, Callback callback, float densityScale,
@@ -87,7 +103,7 @@ public class PageStackViewSwipeHelper {
         return anim;
     }
 
-    private float getPerpendicularVelocity(VelocityTracker vt) {
+    private float getPerpendicularVelocity(VelocityTracker vt) {//垂直的
         return mSwipeDirection == X ? vt.getYVelocity() :
                 vt.getXVelocity();
     }
@@ -109,7 +125,7 @@ public class PageStackViewSwipeHelper {
         mMinAlpha = minAlpha;
     }
 
-    float getAlphaForOffset(View view) {
+    private float getAlphaForOffset(View view) {
         float viewSize = getSize(view);
         final float fadeSize = ALPHA_FADE_END * viewSize;
         float result = 1.0f;
@@ -128,7 +144,7 @@ public class PageStackViewSwipeHelper {
      * Determines whether the given view has RTL layout.
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    public static boolean isLayoutRtl(View view) {
+    private static boolean isLayoutRtl(View view) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             return View.LAYOUT_DIRECTION_RTL == view.getLayoutDirection();
         } else {
@@ -224,8 +240,7 @@ public class PageStackViewSwipeHelper {
     private void snapChild(final View view, float velocity) {
         final boolean canAnimViewBeDismissed = mCallback.canChildBeDismissed(view);
         ValueAnimator anim = createTranslationAnimation(view, 0);
-        int duration = SNAP_ANIM_LEN;
-        anim.setDuration(duration);
+        anim.setDuration(SNAP_ANIM_LEN);
         anim.setInterpolator(PageStackViewConfig.getInstance().linearOutSlowInInterpolator);
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -336,19 +351,4 @@ public class PageStackViewSwipeHelper {
         }
     }
 
-    public interface Callback {
-        View getChildAtPosition(MotionEvent ev);
-
-        boolean canChildBeDismissed(View v);
-
-        void onBeginDrag(View v);
-
-        void onSwipeChanged(View v, float delta);
-
-        void onChildDismissed(View v);
-
-        void onSnapBackCompleted(View v);
-
-        void onDragCancelled(View v);
-    }
 }
