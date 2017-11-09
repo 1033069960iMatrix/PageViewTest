@@ -42,7 +42,7 @@ public class PageStackViewConfig {
     /**
      * Insets
      */
-    public Rect systemInsets = new Rect();
+//    public Rect systemInsets = new Rect();
 //    public Rect displayRect = new Rect();
 
     /**
@@ -242,9 +242,11 @@ public class PageStackViewConfig {
     /**
      * Updates the system insets
      */
+/*
     public void updateSystemInsets(Rect insets) {
         systemInsets.set(insets);
     }
+*/
 
     /**
      * Updates the states that need to be re-read whenever we re-initialize.

@@ -20,7 +20,7 @@ import java.util.HashMap;
  */
 public class PageStackViewLayoutAlgorithm<T> {
     // These are all going to change
-    private static final float StackPeekMinScale = 0.8f; // The min scale of the last card in the peek area
+    private static final float StackPeekMinScale = 0.8f; // The min scale of the last card in the peek area 初始0.8负责最上面卡片的缩放比，
     // A report of the visibility state of the stack
     /*public class VisibilityReport {
         public int numVisibleTasks;
@@ -62,14 +62,14 @@ public class PageStackViewLayoutAlgorithm<T> {
     /**
      * Computes the stack and task rects
      */
-    public void computeRects(int windowWidth, int windowHeight, Rect pageStackBounds) {
+    void computeRects(int windowWidth, int windowHeight, Rect pageStackBounds) {//此时，pageStackBounds设置的也是前面的宽高，就是stack View的onmeasure得出的
         // Compute the stack rects
         mViewRect.set(0, 0, windowWidth, windowHeight);
-        mStackRect.set(pageStackBounds);
+        mStackRect.set(pageStackBounds);//mViewRect和mStackViewRect和mStackVisibleRect在这个程序里是一样的
         mStackVisibleRect.set(pageStackBounds);
-        mStackVisibleRect.bottom = mViewRect.bottom;
+//        mStackVisibleRect.bottom = mViewRect.bottom;
 
-        int widthPadding = (int) (mConfig.pageStackWidthPaddingPct * mStackRect.width());
+        int widthPadding = (int) (mConfig.pageStackWidthPaddingPct * mStackRect.width()+100);//47，主要负责每个卡片的宽度，100是自己加的
         int heightPadding = mConfig.pageStackTopPaddingPx;
         mStackRect.inset(widthPadding, heightPadding);
 
@@ -77,12 +77,12 @@ public class PageStackViewLayoutAlgorithm<T> {
         int size = mStackRect.width();
         int left = mStackRect.left + (mStackRect.width() - size) / 2;
         mTaskRect.set(left, mStackRect.top,
-                left + size, mStackRect.top + size);
+                left + size, mStackRect.top + size);//我觉的bottom算的有问题
 
         // Update the affiliation offsets
-        float visibleTaskPct = 0.5f;
+        float visibleTaskPct = 0.5f;//原来0.5
 //        mWithinAffiliationOffset = mConfig.taskBarHeight;
-        mBetweenAffiliationOffset = (int) (visibleTaskPct * mTaskRect.height());
+        mBetweenAffiliationOffset = (int) (visibleTaskPct * mTaskRect.height());//每个卡片上下间的距离
     }
 
     /**
@@ -212,7 +212,7 @@ public class PageStackViewLayoutAlgorithm<T> {
     /**
      * Update/get the transform
      */
-    public PageViewTransform getStackTransform(float taskProgress, float stackScroll,
+    PageViewTransform getStackTransform(float taskProgress, float stackScroll,
                                                     PageViewTransform transformOut,
                                                     PageViewTransform prevTransform) {
         float pTaskRelative = taskProgress - stackScroll;
@@ -239,7 +239,7 @@ public class PageStackViewLayoutAlgorithm<T> {
         transformOut.scale = scale;
         transformOut.translationY = curveProgressToScreenY(pBounded) - mStackVisibleRect.top -
                 scaleYOffset;
-        transformOut.translationZ = Math.max(minZ, minZ + (pBounded * (maxZ - minZ)));
+        transformOut.translationZ = Math.max(minZ, minZ + (pBounded * (maxZ - minZ)));//每个卡片的阴影是由这个控制的
         transformOut.rect.set(mTaskRect);
         transformOut.rect.offset(0, transformOut.translationY);
         DVUtils.scaleRectAboutCenter(transformOut.rect, transformOut.scale);

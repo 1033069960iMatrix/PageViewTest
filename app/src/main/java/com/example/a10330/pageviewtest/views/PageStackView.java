@@ -328,7 +328,7 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
             for (int i = 0; i < childCount - 1; i++) {
                 PageView tv = (PageView) getChildAt(i);
                 PageView nextTv = null;
-                PageView tmpTv = null;
+                PageView tmpTv ;
                 int clipBottom = 0;
                 if (tv.shouldClipViewInStack()) {
                     // Find the next view to clip against
@@ -368,9 +368,9 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
     /**
      * The stack insets to apply to the stack contents
      */
-    public void setStackInsetRect(Rect r) {
-        mPageStackBounds.set(r);
-    }
+//    public void setStackInsetRect(Rect r) {
+//        mPageStackBounds.set(r);
+//    }
 
     /**
      * Updates the min and max virtual scroll bounds
@@ -520,7 +520,7 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
     }
     @Override
     public void computeScroll() {
-        mStackScroller.computeScroll();//手指松开后继续滑动就靠它了
+//        mStackScroller.computeScroll();//手指松开后继续滑动就靠它了
         // Synchronize the views
         synchronizeStackViewsWithModel();
         clipTaskViews();
@@ -531,10 +531,10 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
     /**
      * Computes the stack and task rects
      */
-    public void computeRects(int windowWidth, int windowHeight, Rect PageStackBounds,
+    public void computeRects(int windowWidth, int windowHeight, Rect pageStackBounds,
                              boolean launchedWithAltTab, boolean launchedFromHome) {
         // Compute the rects in the stack algorithm
-        mLayoutAlgorithm.computeRects(windowWidth, windowHeight, PageStackBounds);
+        mLayoutAlgorithm.computeRects(windowWidth, windowHeight, pageStackBounds);
 
         // Update the scroll bounds
         updateMinMaxScroll(false, launchedWithAltTab, launchedFromHome);
@@ -595,9 +595,9 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
         setStackInsetRect(pageStackBounds1);*/
 
         // Compute our stack/task rects
-        Rect PageStackBounds = new Rect(mPageStackBounds);
-        PageStackBounds.bottom -= mConfig.systemInsets.bottom;
-        computeRects(width, height, PageStackBounds, mConfig.launchedWithAltTab, mConfig.launchedFromHome);
+        Rect pageStackBounds = new Rect(mPageStackBounds);
+//        pageStackBounds.bottom -= mConfig.systemInsets.bottom;
+        computeRects(width, height, pageStackBounds, mConfig.launchedWithAltTab, mConfig.launchedFromHome);
 
         // If this is the first layout, then scroll to the front of the stack and synchronize the
         // stack views immediately to load all the views
@@ -606,7 +606,7 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
             requestSynchronizeStackViewsWithModel();
             synchronizeStackViewsWithModel();
         }
-        //TODO: 以后去掉注释 跟布局没关系，只是一开始调到前几个显示
+        //TODO: 以后去掉注释 上面的代码跟布局没关系，只是一开始跳到前几个显示
 
         // Measure each of the TaskViews
         int childCount = getChildCount();
@@ -625,7 +625,6 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
                             mLayoutAlgorithm.mTaskRect.height() + mTmpRect.top + mTmpRect.bottom,
                             MeasureSpec.EXACTLY));
         }
-
         setMeasuredDimension(width, height);
     }
 
@@ -739,18 +738,18 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
             });
         }
     }
-
+/*
     @Override
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
         // Update the configuration with the latest system insets and trigger a relayout
         // mConfig.updateSystemInsets(insets.getSystemWindowInsets());
-        mConfig.updateSystemInsets(new Rect(insets.getSystemWindowInsetLeft(),
-                insets.getSystemWindowInsetTop(),
-                insets.getSystemWindowInsetRight(),
-                insets.getSystemWindowInsetBottom()));
+        mConfig.updateSystemInsets(new Rect(insets.getSystemWindowInsetLeft(),//0
+                insets.getSystemWindowInsetTop(),//196
+                insets.getSystemWindowInsetRight(),//0
+                insets.getSystemWindowInsetBottom()));//0
         requestLayout();
         return insets.consumeSystemWindowInsets();
-    }
+    }*/
     public boolean isTransformedTouchPointInView(float x, float y, View child) {
         // TODO: confirm if this is the right approach
         if (child == null)

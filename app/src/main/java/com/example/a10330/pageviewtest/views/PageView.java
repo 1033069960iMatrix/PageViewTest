@@ -64,7 +64,7 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
     PageViewHeader mHeaderView;
     PageViewCallbacks<T> mCb;
 
-    public static final Interpolator ALPHA_IN = new PathInterpolator(0.4f, 0f, 1f, 1f);
+//    public static final Interpolator ALPHA_IN = new PathInterpolator(0.4f, 0f, 1f, 1f);
 
     // Optimizations
     ValueAnimator.AnimatorUpdateListener mUpdateDimListener =
@@ -102,9 +102,6 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
         setOutlineProvider(mViewBounds);
     }
 
-    /**
-     * Set callback
-     */
     void setCallbacks(PageViewCallbacks cb) {
         mCb = cb;
     }
@@ -112,12 +109,12 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
     /**
      * Resets this pageView for reuse.
      */
-    void reset() {
+ /*   void reset() {
         resetViewProperties();
         resetNoUserInteractionState();
         setClipViewInStack(false);
         setCallbacks(null);
-    }
+    }*/
 
     /**
      * Gets the task
@@ -205,13 +202,13 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
      * Prepares this task view for the enter-recents animations.  This is called earlier in the
      * first layout because the actual animation into recents may take a long time.
      */
-    void prepareEnterRecentsAnimation(boolean ispageViewLaunchTargetTask,
+    void prepareEnterRecentsAnimation(boolean isPageViewLaunchTargetTask,
                                       boolean occludesLaunchTarget, int offscreenY) {
         int initialDim = getDim();
         if (mConfig.launchedHasConfigurationChanged) {
             // Just load the views as-is
         } else if (mConfig.launchedFromAppWithThumbnail) {
-            if (ispageViewLaunchTargetTask) {
+            if (isPageViewLaunchTargetTask) {
                 // Set the dim to 0 so we can animate it in
                 initialDim = 0;
             } else if (occludesLaunchTarget) {
@@ -229,7 +226,7 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
         // Apply the current dim
         setDim(initialDim);
         // Prepare the thumbnail view alpha
-        mThumbnailView.prepareEnterRecentsAnimation(ispageViewLaunchTargetTask);
+        mThumbnailView.prepareEnterRecentsAnimation(isPageViewLaunchTargetTask);
     }
 
     /**
@@ -298,7 +295,7 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
                     @Override
                     public void run() {
                         // We just throw this into a runnable because starting a view property
-                        // animation using layers can cause inconsisten results if we try and
+                        // animation using layers can cause inconsisten不一致的 results if we try and
                         // update the layers while the animation is running.  In some cases,
                         // the runnabled passed in may start an animation which also uses layers
                         // so we defer all this by posting this.
@@ -328,9 +325,11 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
     /**
      * Resets the state tracking that the user has not interacted with the stack after a certain time.
      */
+/*
     void resetNoUserInteractionState() {
         mHeaderView.resetNoUserInteractionState();
     }
+*/
 
     /**
      * Dismisses this task.
@@ -527,13 +526,13 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
         mKey = null;
     }
 
-    public Bitmap getThumbnail() {
+  /*  public Bitmap getThumbnail() {
         if (mThumbnailView != null) {
             return mThumbnailView.getThumbnail();
         }
 
         return null;
-    }
+    }*/
 
     public void onDataLoaded(T key, Bitmap thumbnail, Drawable headerIcon,
                              String headerTitle, int headerBgColor) {

@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.widget.OverScroller;
+import android.widget.Scroller;
 
 import com.example.a10330.pageviewtest.helpers.PageStackViewConfig;
 import com.example.a10330.pageviewtest.utilities.DVUtils;
@@ -16,20 +17,20 @@ import com.example.a10330.pageviewtest.utilities.DVUtils;
 
 public class PageStackViewScroller {
     public interface PageStackViewScrollerCallbacks {
-        public void onScrollChanged(float p);
+        void onScrollChanged(float p);
     }
 
-    PageStackViewConfig mConfig;
-    PageStackViewLayoutAlgorithm mLayoutAlgorithm;
-    PageStackViewScrollerCallbacks mCb;
+    private PageStackViewConfig mConfig;
+    private PageStackViewLayoutAlgorithm mLayoutAlgorithm;
+    private PageStackViewScrollerCallbacks mCb;
 
-    float mStackScrollP;
+    private float mStackScrollP;
 
     OverScroller mScroller;
     ObjectAnimator mScrollAnimator;
-    float mFinalAnimatedScroll;
+    private float mFinalAnimatedScroll;
 
-    public PageStackViewScroller(Context context, PageStackViewConfig config,
+    PageStackViewScroller(Context context, PageStackViewConfig config,
                             PageStackViewLayoutAlgorithm layoutAlgorithm) {
         mConfig = config;
         mScroller = new OverScroller(context);
@@ -40,28 +41,28 @@ public class PageStackViewScroller {
     /**
      * Resets the task scroller.
      */
-    public void reset() {
+/*    public void reset() {
         mStackScrollP = 0f;
-    }
+    }*/
 
     /**
      * Sets the callbacks
      */
-    public void setCallbacks(PageStackViewScrollerCallbacks cb) {
+    void setCallbacks(PageStackViewScrollerCallbacks cb) {
         mCb = cb;
     }
 
     /**
      * Gets the current stack scroll
      */
-    public float getStackScroll() {
+    float getStackScroll() {
         return mStackScrollP;
     }
 
     /**
      * Sets the current stack scroll
      */
-    public void setStackScroll(float s) {
+    void setStackScroll(float s) {
         mStackScrollP = s;
         if (mCb != null) {
             mCb.onScrollChanged(mStackScrollP);
@@ -71,7 +72,7 @@ public class PageStackViewScroller {
     /**
      * Sets the current stack scroll without calling the callback.
      */
-    void setStackScrollRaw(float s) {
+    private void setStackScrollRaw(float s) {
         mStackScrollP = s;
     }
 
@@ -80,7 +81,7 @@ public class PageStackViewScroller {
      *
      * @return whether the stack progress changed.
      */
-    public boolean setStackScrollToInitialState() {
+    boolean setStackScrollToInitialState() {
         float prevStackScrollP = mStackScrollP;
         setStackScroll(getBoundedStackScroll(mLayoutAlgorithm.mInitialScrollP));
         return Float.compare(prevStackScrollP, mStackScrollP) != 0;
@@ -89,7 +90,7 @@ public class PageStackViewScroller {
     /**
      * Bounds the current scroll if necessary
      */
-    public boolean boundScroll() {
+    boolean boundScroll() {
         float curScroll = getStackScroll();
         float newScroll = getBoundedStackScroll(curScroll);
         if (Float.compare(newScroll, curScroll) != 0) {
@@ -187,7 +188,7 @@ public class PageStackViewScroller {
         return (int) (p * mLayoutAlgorithm.mStackVisibleRect.height());
     }
 
-    float scrollRangeToProgress(int s) {
+    private float scrollRangeToProgress(int s) {
         return (float) s / mLayoutAlgorithm.mStackVisibleRect.height();
     }
 

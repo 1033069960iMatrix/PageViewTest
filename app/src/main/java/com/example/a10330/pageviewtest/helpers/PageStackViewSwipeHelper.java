@@ -17,7 +17,7 @@ import android.view.View;
 import android.view.animation.LinearInterpolator;
 //ok
 /**
- * This class facilitates swipe to dismiss. It defines an interface to be implemented by the
+ * This class facilitates帮助 swipe to dismiss. It defines an interface to be implemented by the
  * by the class hosting the views that need to swiped, and, using this interface, handles touch
  * events and translates / fades / animates the view as it is dismissed.
  */
@@ -29,7 +29,7 @@ public class PageStackViewSwipeHelper {
     private static final boolean DISMISS_IF_SWIPED_FAR_ENOUGH = true;
 
     public static final int X = 0;
-    public static final int Y = 1;
+    private static final int Y = 1;
 
     private static LinearInterpolator sLinearInterpolator = new LinearInterpolator();
 
@@ -38,7 +38,7 @@ public class PageStackViewSwipeHelper {
     private int MAX_ESCAPE_ANIMATION_DURATION = 150; // ms
     private static final int SNAP_ANIM_LEN = SLOW_ANIMATIONS ? 1000 : 250; // ms
 
-    public static float ALPHA_FADE_START = 0.15f; // fraction of thumbnail width
+    private static float ALPHA_FADE_START = 0.15f; // fraction of thumbnail width
     // where fade starts
     static final float ALPHA_FADE_END = 0.65f; // fraction of thumbnail width
     // beyond which alpha->0

@@ -20,7 +20,7 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
     static int INACTIVE_POINTER_ID = -1;
 
     PageStackViewConfig mConfig;
-    PageStackView mDeckView;
+    PageStackView mPageStackView;
     PageStackViewScroller mScroller;
     VelocityTracker mVelocityTracker;
 
@@ -51,7 +51,7 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
         mScrollTouchSlop = configuration.getScaledTouchSlop();
         mPagingTouchSlop = configuration.getScaledPagingTouchSlop();
-        mDeckView = dv;
+        mPageStackView = dv;
         mScroller = scroller;
         mConfig = config;
 
@@ -89,11 +89,11 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
      * Returns the view at the specified coordinates
      */
     PageView findViewAtPoint(int x, int y) {
-        int childCount = mDeckView.getChildCount();
+        int childCount = mPageStackView.getChildCount();
         for (int i = childCount - 1; i >= 0; i--) {
-            PageView tv = (PageView) mDeckView.getChildAt(i);
+            PageView tv = (PageView) mPageStackView.getChildAt(i);
             if (tv.getVisibility() == View.VISIBLE) {
-                if (mDeckView.isTransformedTouchPointInView(x, y, tv)) {
+                if (mPageStackView.isTransformedTouchPointInView(x, y, tv)) {
                     return tv;
                 }
             }
@@ -115,7 +115,7 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
      */
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         // Return early if we have no children
-        boolean hasChildren = (mDeckView.getChildCount() > 0);
+        boolean hasChildren = (mPageStackView.getChildCount() > 0);
         if (!hasChildren) {
             return false;
         }
@@ -134,7 +134,7 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
                 // Save the touch down info
                 mInitialMotionX = mLastMotionX = (int) ev.getX();
                 mInitialMotionY = mLastMotionY = (int) ev.getY();
-                mInitialP = mLastP = mDeckView.getStackAlgorithm().screenYToCurveProgress(mLastMotionY);
+                mInitialP = mLastP = mPageStackView.getStackAlgorithm().screenYToCurveProgress(mLastMotionY);
                 mActivePointerId = ev.getPointerId(0);
                 mActivePageView = findViewAtPoint(mLastMotionX, mLastMotionY);
                 // Stop the current scroll if it is still flinging
@@ -159,7 +159,7 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
                     // Save the touch move info
                     mIsScrolling = true;
                     // Disallow parents from intercepting touch events
-                    final ViewParent parent = mDeckView.getParent();
+                    final ViewParent parent = mPageStackView.getParent();
                     if (parent != null) {
                         parent.requestDisallowInterceptTouchEvent(true);
                     }
@@ -167,7 +167,7 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
 
                 mLastMotionX = x;
                 mLastMotionY = y;
-                mLastP = mDeckView.getStackAlgorithm().screenYToCurveProgress(mLastMotionY);
+                mLastP = mPageStackView.getStackAlgorithm().screenYToCurveProgress(mLastMotionY);
                 break;
             }
             case MotionEvent.ACTION_CANCEL:
@@ -190,9 +190,9 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
     /**
      * Handles touch events once we have intercepted them
      */
-    public boolean onTouchEvent(MotionEvent ev) {
+    boolean onTouchEvent(MotionEvent ev) {
         // Short circuit if we have no children
-        boolean hasChildren = (mDeckView.getChildCount() > 0);
+        boolean hasChildren = (mPageStackView.getChildCount() > 0);
         if (!hasChildren) {
             return false;
         }
@@ -211,7 +211,7 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
                 // Save the touch down info
                 mInitialMotionX = mLastMotionX = (int) ev.getX();
                 mInitialMotionY = mLastMotionY = (int) ev.getY();
-                mInitialP = mLastP = mDeckView.getStackAlgorithm().screenYToCurveProgress(mLastMotionY);
+                mInitialP = mLastP = mPageStackView.getStackAlgorithm().screenYToCurveProgress(mLastMotionY);
                 mActivePointerId = ev.getPointerId(0);
                 mActivePageView = findViewAtPoint(mLastMotionX, mLastMotionY);
                 // Stop the current scroll if it is still flinging
@@ -221,7 +221,7 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
                 initOrResetVelocityTracker();
                 mVelocityTracker.addMovement(createMotionEventForStackScroll(ev));
                 // Disallow parents from intercepting touch events
-                final ViewParent parent = mDeckView.getParent();
+                final ViewParent parent = mPageStackView.getParent();
                 if (parent != null) {
                     parent.requestDisallowInterceptTouchEvent(true);
                 }
@@ -232,7 +232,7 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
                 mActivePointerId = ev.getPointerId(index);
                 mLastMotionX = (int) ev.getX(index);
                 mLastMotionY = (int) ev.getY(index);
-                mLastP = mDeckView.getStackAlgorithm().screenYToCurveProgress(mLastMotionY);
+                mLastP = mPageStackView.getStackAlgorithm().screenYToCurveProgress(mLastMotionY);
                 break;
             }
             case MotionEvent.ACTION_MOVE: {
@@ -244,13 +244,13 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
                 int x = (int) ev.getX(activePointerIndex);
                 int y = (int) ev.getY(activePointerIndex);
                 int yTotal = Math.abs(y - mInitialMotionY);
-                float curP = mDeckView.getStackAlgorithm().screenYToCurveProgress(y);
+                float curP = mPageStackView.getStackAlgorithm().screenYToCurveProgress(y);
                 float deltaP = mLastP - curP;
                 if (!mIsScrolling) {
                     if (yTotal > mScrollTouchSlop) {
                         mIsScrolling = true;
                         // Disallow parents from intercepting touch events
-                        final ViewParent parent = mDeckView.getParent();
+                        final ViewParent parent = mPageStackView.getParent();
                         if (parent != null) {
                             parent.requestDisallowInterceptTouchEvent(true);
                         }
@@ -270,7 +270,7 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
                 }
                 mLastMotionX = x;
                 mLastMotionY = y;
-                mLastP = mDeckView.getStackAlgorithm().screenYToCurveProgress(mLastMotionY);
+                mLastP = mPageStackView.getStackAlgorithm().screenYToCurveProgress(mLastMotionY);
                 mTotalPMotion += Math.abs(deltaP);
                 break;
             }
@@ -286,12 +286,12 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
                             mScroller.progressToScrollRange(mScroller.getStackScroll()),
                             0, velocity,
                             0, 0,
-                            mScroller.progressToScrollRange(mDeckView.getStackAlgorithm().mMinScrollP),
-                            mScroller.progressToScrollRange(mDeckView.getStackAlgorithm().mMaxScrollP),
+                            mScroller.progressToScrollRange(mPageStackView.getStackAlgorithm().mMinScrollP),
+                            mScroller.progressToScrollRange(mPageStackView.getStackAlgorithm().mMaxScrollP),
                             0, DVConstants.Values.DView.PageStackMinOverscrollRange +
                                     overscrollRange);
                     // Invalidate to kick off computeScroll
-                    mDeckView.invalidate();
+//                    mPageStackView.invalidate();//这个去掉也可以，应该多余了
                 } else if (mScroller.isScrollOutOfBounds()) {
                     // Animate the scroll back into bounds
                     mScroller.animateBoundScroll();
@@ -312,7 +312,7 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
                     mActivePointerId = ev.getPointerId(newPointerIndex);
                     mLastMotionX = (int) ev.getX(newPointerIndex);
                     mLastMotionY = (int) ev.getY(newPointerIndex);
-                    mLastP = mDeckView.getStackAlgorithm().screenYToCurveProgress(mLastMotionY);
+                    mLastP = mPageStackView.getStackAlgorithm().screenYToCurveProgress(mLastMotionY);
                     mVelocityTracker.clear();
                 }
                 break;
@@ -344,12 +344,12 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
                     // Find the front most task and scroll the next task to the front
                     float vScroll = ev.getAxisValue(MotionEvent.AXIS_VSCROLL);
                     if (vScroll > 0) {
-                        if (mDeckView.ensureFocusedTask()) {
-                            mDeckView.focusNextTask(true, false);
+                        if (mPageStackView.ensureFocusedTask()) {
+                            mPageStackView.focusNextTask(true, false);
                         }
                     } else {
-                        if (mDeckView.ensureFocusedTask()) {
-                            mDeckView.focusNextTask(false, false);
+                        if (mPageStackView.ensureFocusedTask()) {
+                            mPageStackView.focusNextTask(false, false);
                         }
                     }
                     return true;
@@ -380,7 +380,7 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
         // Disallow touch events from this task view
         tv.setTouchEnabled(false);
         // Disallow parents from intercepting touch events
-        final ViewParent parent = mDeckView.getParent();
+        final ViewParent parent = mPageStackView.getParent();
         if (parent != null) {
             parent.requestDisallowInterceptTouchEvent(true);
         }
@@ -399,7 +399,7 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
         // Re-enable touch events from this task view
         tv.setTouchEnabled(true);
         // Remove the task view from the stack
-        mDeckView.onPageViewDismissed(tv);
+        mPageStackView.onPageViewDismissed(tv);
     }
 
     @Override
