@@ -4,59 +4,53 @@ import android.content.Context;
 
 import java.util.Iterator;
 import java.util.LinkedList;
-//ok
 /**
  * Created by 10330 on 2017/11/5.
  */
 
-public class ViewPool<V,T> {
-
+class ViewPool<V,T> {
     /* An interface to the consumer of a view pool */
     public interface ViewPoolConsumer<V, T> {
-        public V createView(Context context);
+        V createView(Context context);
 
-        public void prepareViewToEnterPool(V v);
+        void prepareViewToEnterPool(V v);
 
-        public void prepareViewToLeavePool(V v, T prepareData, boolean isNewView);
+        void prepareViewToLeavePool(V v, T prepareData, boolean isNewView);
 
-        public boolean hasPreferredData(V v, T preferredData);
+        boolean hasPreferredData(V v, T preferredData);
     }
-
-    Context mContext;
-    ViewPoolConsumer<V, T> mViewCreator;
-    LinkedList<V> mPool = new LinkedList<V>();
-
+    private Context mContext;
+    private ViewPoolConsumer<V, T> mViewPoolConsumer;
+    private LinkedList<V> mViewList = new LinkedList<>();
     /**
      * Initializes the pool with a fixed predetermined pool size
      */
-    public ViewPool(Context context, ViewPoolConsumer<V, T> viewCreator) {
+    ViewPool(Context context, ViewPoolConsumer<V, T> consumer) {
         mContext = context;
-        mViewCreator = viewCreator;
+        mViewPoolConsumer = consumer;
     }
-
     /**
      * Returns a view into the pool
      */
     void returnViewToPool(V v) {
-        mViewCreator.prepareViewToEnterPool(v);
-        mPool.push(v);
+        mViewPoolConsumer.prepareViewToEnterPool(v);
+        mViewList.push(v);
     }
-
     /**
      * Gets a view from the pool and prepares it
      */
     V pickUpViewFromPool(T preferredData, T prepareData) {
         V v = null;
         boolean isNewView = false;
-        if (mPool.isEmpty()) {
-            v = mViewCreator.createView(mContext);
+        if (mViewList.isEmpty()) {
+            v = mViewPoolConsumer.createView(mContext);
             isNewView = true;
         } else {
             // Try and find a preferred view
-            Iterator<V> iter = mPool.iterator();
+            Iterator<V> iter = mViewList.iterator();
             while (iter.hasNext()) {
                 V vpv = iter.next();
-                if (mViewCreator.hasPreferredData(vpv, preferredData)) {
+                if (mViewPoolConsumer.hasPreferredData(vpv, preferredData)) {
                     v = vpv;
                     iter.remove();
                     break;
@@ -64,20 +58,10 @@ public class ViewPool<V,T> {
             }
             // Otherwise, just grab the first view
             if (v == null) {
-                v = mPool.pop();
+                v = mViewList.pop();
             }
         }
-        mViewCreator.prepareViewToLeavePool(v, prepareData, isNewView);
+        mViewPoolConsumer.prepareViewToLeavePool(v, prepareData, isNewView);
         return v;
-    }
-
-    /**
-     * Returns an iterator to the list of the views in the pool.
-     */
-    Iterator<V> poolViewIterator() {
-        if (mPool != null) {
-            return mPool.iterator();
-        }
-        return null;
     }
 }

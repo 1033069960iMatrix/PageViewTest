@@ -213,7 +213,7 @@ public class PageViewHeader extends FrameLayout {
     /**
      * Animates this task bar dismiss button when launching a task.
      */
-    void startLaunchTaskDismissAnimation() {
+/*    void startLaunchTaskDismissAnimation() {
         if (mDismissButton.getVisibility() == View.VISIBLE) {
             mDismissButton.animate().cancel();
             mDismissButton.animate()
@@ -224,7 +224,7 @@ public class PageViewHeader extends FrameLayout {
                     .withLayer()
                     .start();
         }
-    }
+    }*/
 
     /**
      * Animates this task bar if the user does not interact with the stack after a certain time.
@@ -272,7 +272,7 @@ public class PageViewHeader extends FrameLayout {
     /**
      * Notifies the associated pageView has been focused.
      */
-    void onpageViewFocusChanged(boolean focused, boolean animateFocusedState) {
+    void onPageViewFocusChanged(boolean focused, boolean animateFocusedState) {
         // If we are not animating the visible state, just return
         if (!animateFocusedState) return;
 

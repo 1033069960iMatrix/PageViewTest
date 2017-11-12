@@ -15,47 +15,14 @@ public class PageViewTransform {
     public int translationY = 0;
     public float translationZ = 0;
     public float scale = 1f;
-    public float alpha = 1f;
+    private float alpha = 1f;
     public boolean visible = false;
     public Rect rect = new Rect();
-    public float p = 0f;
+    public float p = 0f;// TODO: 2017/11/12 干什么用的
 
     public PageViewTransform() {
         // Do nothing
     }
-    /**
-     * Resets the current transform
-     */
-    public void reset() {
-        startDelay = 0;
-        translationY = 0;
-        translationZ = 0;
-        scale = 1f;
-        alpha = 1f;
-        visible = false;
-        rect.setEmpty();
-        p = 0f;
-    }
-
-    /**
-     * Convenience functions to compare against current property values
-     */
-    private boolean hasAlphaChangedFrom(float v) {
-        return (Float.compare(alpha, v) != 0);
-    }
-
-    private boolean hasScaleChangedFrom(float v) {
-        return (Float.compare(scale, v) != 0);
-    }
-
-    private boolean hasTranslationYChangedFrom(float v) {
-        return (Float.compare(translationY, v) != 0);
-    }
-
-    private boolean hasTranslationZChangedFrom(float v) {
-        return (Float.compare(translationZ, v) != 0);
-    }
-
     /**
      * Applies this transform to a view.
      */
@@ -65,7 +32,6 @@ public class PageViewTransform {
         if (duration > 0) {
             ViewPropertyAnimator anim = v.animate();
             boolean requiresLayers = false;
-
             // Animate to the final state
             if (hasTranslationYChangedFrom(v.getTranslationY())) {
                 anim.translationY(translationY);
@@ -112,7 +78,19 @@ public class PageViewTransform {
             }
         }
     }
-
+    /**
+     * Resets the current transform
+     */
+    public void reset() {
+        startDelay = 0;
+        translationY = 0;
+        translationZ = 0;
+        scale = 1f;
+        alpha = 1f;
+        visible = false;
+        rect.setEmpty();
+        p = 0f;
+    }
     /**
      * Reset the transform on a view.
      */
@@ -123,6 +101,21 @@ public class PageViewTransform {
         v.setScaleX(1f);
         v.setScaleY(1f);
         v.setAlpha(1f);
+    }
+    /**
+     * Convenience functions to compare against current property values
+     */
+    private boolean hasAlphaChangedFrom(float v) {
+        return (Float.compare(alpha, v) != 0);
+    }
+    private boolean hasScaleChangedFrom(float v) {
+        return (Float.compare(scale, v) != 0);
+    }
+    private boolean hasTranslationYChangedFrom(float v) {
+        return (Float.compare(translationY, v) != 0);
+    }
+    private boolean hasTranslationZChangedFrom(float v) {
+        return (Float.compare(translationZ, v) != 0);
     }
     @Override
     public String toString() {

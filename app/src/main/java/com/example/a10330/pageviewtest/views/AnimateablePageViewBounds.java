@@ -12,28 +12,27 @@ import com.example.a10330.pageviewtest.helpers.PageStackViewConfig;
  */
 /* An outline provider that has a clip and outline that can be animated. */
 public class AnimateablePageViewBounds extends ViewOutlineProvider {
-    PageStackViewConfig mConfig;
+    private static final float MIN_ALPHA = 0.25f;
+    private PageStackViewConfig mConfig;
+    private PageView mSourceView;
+    private Rect mClipRect = new Rect();// TODO: 2017/11/11 还没弄清楚两个矩形什么区别
+    private Rect mClipBounds = new Rect();
+    private int mCornerRadius;
+    private float mAlpha = 1f;
 
-    PageView mSourceView;
-    Rect mClipRect = new Rect();
-    Rect mClipBounds = new Rect();
-    int mCornerRadius;
-    float mAlpha = 1f;
-    final float mMinAlpha = 0.25f;
-
-    public AnimateablePageViewBounds(PageView source, int cornerRadius) {
+    AnimateablePageViewBounds(PageView source, int cornerRadius) {
         mConfig = PageStackViewConfig.getInstance();
         mSourceView = source;
         mCornerRadius = cornerRadius;
-        setClipBottom(getClipBottom());
+        setClipBottom(mClipRect.bottom);
     }
 
     @Override
     public void getOutline(View view, Outline outline) {
-        outline.setAlpha(mMinAlpha + mAlpha / (1f - mMinAlpha));
+        outline.setAlpha(MIN_ALPHA + mAlpha / (1f - MIN_ALPHA));
         outline.setRoundRect(mClipRect.left, mClipRect.top,
                 mSourceView.getWidth() - mClipRect.right,
-                mSourceView.getHeight() - mClipRect.bottom,
+                mSourceView.getHeight() - mClipRect.bottom,// TODO: 2017/11/11不明白为何右边设置
                 mCornerRadius);
     }
 
@@ -50,7 +49,7 @@ public class AnimateablePageViewBounds extends ViewOutlineProvider {
     /**
      * Sets the bottom clip.
      */
-    public void setClipBottom(int bottom) {
+    void setClipBottom(int bottom) {
         if (bottom != mClipRect.bottom) {
             mClipRect.bottom = bottom;
             mSourceView.invalidateOutline();
@@ -60,13 +59,6 @@ public class AnimateablePageViewBounds extends ViewOutlineProvider {
                         bottom - mSourceView.getPaddingBottom());
             }
         }
-    }
-
-    /**
-     * Returns the bottom clip.
-     */
-    public int getClipBottom() {
-        return mClipRect.bottom;
     }
 
     private void updateClipBounds() {

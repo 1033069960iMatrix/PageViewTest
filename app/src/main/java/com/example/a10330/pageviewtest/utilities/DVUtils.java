@@ -184,7 +184,7 @@ public class DVUtils {
         }
     }
 
-    public static Matrix IDENTITY_MATRIX = new Matrix() {
+    private static final Matrix IDENTITY_MATRIX = new Matrix() {
         void oops() {
             throw new IllegalStateException("Matrix can not be modified");
         }

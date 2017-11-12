@@ -24,15 +24,11 @@ import com.example.a10330.pageviewtest.helpers.PageStackViewConfig;
 import com.example.a10330.pageviewtest.helpers.PageViewTransform;
 import com.example.a10330.pageviewtest.utilities.DVConstants;
 import com.example.a10330.pageviewtest.utilities.DVUtils;
-//ok
 /**
  * Created by 10330 on 2017/11/5.
  */
 
 public class PageView<T> extends FrameLayout implements View.OnClickListener,View.OnLongClickListener {
-    /**
-     * The pageView callbacks
-     */
     interface PageViewCallbacks<T> {
         void onPageViewAppIconClicked(PageView dcv);
         void onPageViewAppInfoClicked(PageView dcv);
@@ -41,31 +37,22 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
         void onPageViewClipStateChanged(PageView dcv);
         void onPageViewFocusChanged(PageView<T> dcv, boolean focused);
     }
-
-    PageStackViewConfig mConfig;
-
-    float mTaskProgress;
-    ObjectAnimator mTaskProgressAnimator;
-    float mMaxDimScale;
-    int mDimAlpha;
-    AccelerateInterpolator mDimInterpolator = new AccelerateInterpolator(1f);
-    PorterDuffColorFilter mDimColorFilter = new PorterDuffColorFilter(0, PorterDuff.Mode.SRC_ATOP);
-    Paint mDimLayerPaint = new Paint();
-
-    T mKey;
-    boolean mTaskDataLoaded;
-    boolean mIsFocused;
-    boolean mFocusAnimationsEnabled;
-    boolean mClipViewInStack;
-    AnimateablePageViewBounds mViewBounds;
-
-    View mContent;
+    private PageStackViewConfig mConfig;
+    private float mTaskProgress;
+    private ObjectAnimator mTaskProgressAnimator;
+    private float mMaxDimScale;
+    private int mDimAlpha;
+    private AccelerateInterpolator mDimInterpolator = new AccelerateInterpolator(1f);
+    private Paint mDimLayerPaint = new Paint();
+    private T mKey;
+    private boolean mIsFocused;
+    private boolean mFocusAnimationsEnabled;
+    private boolean mClipViewInStack;
+    private AnimateablePageViewBounds mViewBounds;
+    private View mPageViewContent;
     PageViewThumbnail mThumbnailView;
-    PageViewHeader mHeaderView;
-    PageViewCallbacks<T> mCb;
-
-//    public static final Interpolator ALPHA_IN = new PathInterpolator(0.4f, 0f, 1f, 1f);
-
+    private PageViewHeader mHeaderView;
+    private PageViewCallbacks<T> mCb;
     // Optimizations
     ValueAnimator.AnimatorUpdateListener mUpdateDimListener =
             new ValueAnimator.AnimatorUpdateListener() {
@@ -75,37 +62,31 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
                 }
             };
 
-
     public PageView(Context context) {
         this(context, null);
     }
-
     public PageView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
-
     public PageView(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
     }
-
     public PageView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         mConfig = PageStackViewConfig.getInstance();
         mMaxDimScale = mConfig.pageStackMaxDim / 255f;
         mClipViewInStack = true;
         mViewBounds = new AnimateablePageViewBounds(this, mConfig.pageViewRoundedCornerRadiusPx);
-        setTaskProgress(getTaskProgress());
-        setDim(getDim());
+        setTaskProgress(mTaskProgress);
+        setDim(mDimAlpha);
         /*if (mConfig.fakeShadows) {
             setBackground(new FakeShadowDrawable(context.getResources(), mConfig));
         }*/
         setOutlineProvider(mViewBounds);
     }
-
     void setCallbacks(PageViewCallbacks cb) {
         mCb = cb;
     }
-
     /**
      * Resets this pageView for reuse.
      */
@@ -115,31 +96,23 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
         setClipViewInStack(false);
         setCallbacks(null);
     }*/
-
-    /**
-     * Gets the task
-     */
     T getAttachedKey() {
         return mKey;
     }
-
     /**
      * Returns the view bounds.
      */
     AnimateablePageViewBounds getViewBounds() {
         return mViewBounds;
     }
-
     @Override
     protected void onFinishInflate() {
-        // Bind the views
         super.onFinishInflate();
-        mContent = findViewById(R.id.task_view_content);
-        mHeaderView = (PageViewHeader) findViewById(R.id.task_view_bar);
-        mThumbnailView = (PageViewThumbnail) findViewById(R.id.task_view_thumbnail);
+        mPageViewContent =findViewById(R.id.page_view_content);
+        mHeaderView =findViewById(R.id.task_view_bar);
+        mThumbnailView =findViewById(R.id.task_view_thumbnail);
         mThumbnailView.updateClipToTaskBar(mHeaderView);
     }
-
   /*  @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = MeasureSpec.getSize(widthMeasureSpec);
@@ -149,7 +122,7 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
         int heightWithoutPadding = height - getPaddingTop() - getPaddingBottom();
 
         // Measure the content
-        mContent.measure(MeasureSpec.makeMeasureSpec(widthWithoutPadding, MeasureSpec.EXACTLY),
+        mPageViewContent.measure(MeasureSpec.makeMeasureSpec(widthWithoutPadding, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(widthWithoutPadding, MeasureSpec.EXACTLY));
 
         // Measure the bar view, and action button
@@ -164,20 +137,17 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
         invalidateOutline();
     }*/
   //不用重写也行
-
     /**
      * Synchronizes this view's properties with the task's transform
      */
     void updateViewPropertiesToPageTransform(PageViewTransform toTransform, int duration) {
         updateViewPropertiesToPageTransform(toTransform, duration, null);
     }
-
     void updateViewPropertiesToPageTransform(PageViewTransform toTransform, int duration,
                                              ValueAnimator.AnimatorUpdateListener updateCallback) {
         // Apply the transform
         toTransform.applyToPageView(this, duration, mConfig.fastOutSlowInInterpolator, false,
                 !mConfig.fakeShadows, updateCallback);
-
         // Update the task progress
         DVUtils.cancelAnimationWithoutCallbacks(mTaskProgressAnimator);
         if (duration <= 0) {
@@ -189,10 +159,6 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
             mTaskProgressAnimator.start();
         }
     }
-
-    /**
-     * Resets this view's properties
-     */
     void resetViewProperties() {
         setDim(0);
         setLayerType(View.LAYER_TYPE_NONE, null);
@@ -204,7 +170,7 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
      */
     void prepareEnterRecentsAnimation(boolean isPageViewLaunchTargetTask,
                                       boolean occludesLaunchTarget, int offscreenY) {
-        int initialDim = getDim();
+        int initialDim = mDimAlpha;
         if (mConfig.launchedHasConfigurationChanged) {
             // Just load the views as-is
         } else if (mConfig.launchedFromAppWithThumbnail) {
@@ -228,7 +194,6 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
         // Prepare the thumbnail view alpha
         mThumbnailView.prepareEnterRecentsAnimation(isPageViewLaunchTargetTask);
     }
-
     /**
      * Animates this task view as it enters recents
      */
@@ -277,7 +242,6 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
             }
         }, startDelay);
     }
-
     /**
      * Animates the deletion of this task view
      */
@@ -307,21 +271,18 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
                 })
                 .start();
     }
-
     /**
      * Animates this task view if the user does not interact with the stack after a certain time.
      */
     void startNoUserInteractionAnimation() {
         mHeaderView.startNoUserInteractionAnimation();
     }
-
     /**
      * Mark this task view that the user does has not interacted with the stack after a certain time.
      */
     void setNoUserInteractionState() {
         mHeaderView.setNoUserInteractionState();
     }
-
     /**
      * Resets the state tracking that the user has not interacted with the stack after a certain time.
      */
@@ -330,7 +291,6 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
         mHeaderView.resetNoUserInteractionState();
     }
 */
-
     /**
      * Dismisses this task.
      */
@@ -346,7 +306,6 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
             }
         });
     }
-
     /**
      * Returns whether this view should be clipped, or any views below should clip against this
      * view.
@@ -354,11 +313,10 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
     boolean shouldClipViewInStack() {
         return mClipViewInStack && (getVisibility() == View.VISIBLE);
     }
-
     /**
      * Sets whether this view should be clipped, or clipped against.
      */
-    public void setClipViewInStack(boolean clip) {
+    void setClipViewInStack(boolean clip) {
         if (clip != mClipViewInStack) {
             mClipViewInStack = clip;
             if (mCb != null) {
@@ -366,36 +324,24 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
             }
         }
     }
-
-    /**
-     * Sets the current task progress.
-     */
-    public void setTaskProgress(float p) {
+    private void setTaskProgress(float p) {
         mTaskProgress = p;
         mViewBounds.setAlpha(p);
         updateDimFromTaskProgress();
     }
-
-    /**
-     * Returns the current task progress.
-     */
-    public float getTaskProgress() {
-        return mTaskProgress;
-    }
-
     /**
      * Returns the current dim.
      */
-    public void setDim(int dim) {
+    private void setDim(int dim) {
         mDimAlpha = dim;
         if (mConfig.useHardwareLayers) {
             // Defer setting hardware layers if we have not yet measured, or there is no dim to draw
             if (getMeasuredWidth() > 0 && getMeasuredHeight() > 0) {
-                mDimColorFilter =
+                PorterDuffColorFilter mDimColorFilter =
                         new PorterDuffColorFilter(Color.argb(mDimAlpha, 0, 0, 0),
                                 PorterDuff.Mode.SRC_ATOP);
                 mDimLayerPaint.setColorFilter(mDimColorFilter);
-                mContent.setLayerType(LAYER_TYPE_HARDWARE, mDimLayerPaint);
+                mPageViewContent.setLayerType(LAYER_TYPE_HARDWARE, mDimLayerPaint);
             }
         } else {
             float dimAlpha = mDimAlpha / 255.0f;
@@ -407,40 +353,30 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
             }
         }
     }
-
-    /**
-     * Returns the current dim.
-     */
-    public int getDim() {
-        return mDimAlpha;
-    }
     /**
      * Compute the dim as a function of the scale of this view.
      */
-    int getDimFromTaskProgress() {
+    private int getDimFromTaskProgress() {
         float dim = mMaxDimScale * mDimInterpolator.getInterpolation(1f - mTaskProgress);
         return (int) (dim * 255);
     }
-
     /**
      * Update the dim as a function of the scale of this view.
      */
-    void updateDimFromTaskProgress() {
+    private void updateDimFromTaskProgress() {
         setDim(getDimFromTaskProgress());
     }
-
     /**** View focus state ****/
-
     /**
      * Sets the focused task explicitly. We need a separate flag because requestFocus() won't happen
      * if the view is not currently visible, or we are in touch state (where we still want to keep
      * track of focus).
      */
-    public void setFocusedTask(boolean animateFocusedState) {
+    void setFocusedTask(boolean animateFocusedState) {
         mIsFocused = true;
         if (mFocusAnimationsEnabled) {
             // Focus the header bar
-            mHeaderView.onpageViewFocusChanged(true, animateFocusedState);
+            mHeaderView.onPageViewFocusChanged(true, animateFocusedState);
         }
         // Update the thumbnail alpha with the focus
         mThumbnailView.onFocusChanged(true);
@@ -456,17 +392,15 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
         setFocusableInTouchMode(false);
         invalidate();
     }
-
     /**
      * Unsets the focused task explicitly.
      */
-    void unsetFocusedTask() {
+    private void unsetFocusedTask() {
         mIsFocused = false;
         if (mFocusAnimationsEnabled) {
             // Un-focus the header bar
-            mHeaderView.onpageViewFocusChanged(false, true);
+            mHeaderView.onPageViewFocusChanged(false, true);
         }
-
         // Update the thumbnail alpha with the focus
         mThumbnailView.onFocusChanged(false);
         // Call the callback
@@ -475,7 +409,6 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
         }
         invalidate();
     }
-
     /**
      * Updates the explicitly focused state when the view focus changes.
      */
@@ -486,14 +419,12 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
             unsetFocusedTask();
         }
     }
-
     /**
      * Returns whether we have explicitly been focused.
      */
-    public boolean isFocusedTask() {
+    boolean isFocusedTask() {
         return mIsFocused || isFocused();
     }
-
     /**
      * Enables all focus animations.
      */
@@ -502,38 +433,24 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
         mFocusAnimationsEnabled = true;
         if (mIsFocused && !wasFocusAnimationsEnabled) {
             // Re-notify the header if we were focused and animations were not previously enabled
-            mHeaderView.onpageViewFocusChanged(true, true);
+            mHeaderView.onPageViewFocusChanged(true, true);
         }
     }
-
-    /**** TaskCallbacks Implementation ****/
-
     /**
      * Binds this task view to the task
      */
-    public void onTaskBound(T key) {
+    void onTaskBound(T key) {
         mKey = key;
     }
-
     private boolean isBound() {
         return mKey != null;
     }
-
     /**
      * Binds this task view to the task
      */
-    public void onTaskUnbound() {
+    void onTaskUnbound() {
         mKey = null;
     }
-
-  /*  public Bitmap getThumbnail() {
-        if (mThumbnailView != null) {
-            return mThumbnailView.getThumbnail();
-        }
-
-        return null;
-    }*/
-
     public void onDataLoaded(T key, Bitmap thumbnail, Drawable headerIcon,
                              String headerTitle, int headerBgColor) {
         if (!isBound() || !mKey.equals(key))
@@ -550,10 +467,8 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
             // TODO: Check if this functionality is needed
             mHeaderView.mApplicationIcon.setOnLongClickListener(this);
         }
-        mTaskDataLoaded = true;
     }
-
-    public void onDataUnloaded() {
+    void onDataUnloaded() {
         if (mThumbnailView != null && mHeaderView != null) {
             // Unbind each of the views from the task data and remove the task callback
             mThumbnailView.unbindFromTask();
@@ -565,20 +480,13 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
                 mHeaderView.mApplicationIcon.setOnLongClickListener(null);
             }
         }
-        mTaskDataLoaded = false;
     }
-
     /**
      * Enables/disables handling touch on this task view.
      */
-    public void setTouchEnabled(boolean enabled) {
+    void setTouchEnabled(boolean enabled) {
         setOnClickListener(enabled ? this : null);
     }
-
-    /**
-     * * View.OnClickListener Implementation ***
-     */
-
     @Override
     public void onClick(final View v) {
         final PageView<T> tv = this;
@@ -604,11 +512,6 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
             }
         }
     }
-
-    /**
-     * * View.OnLongClickListener Implementation ***
-     */
-
     @Override
     public boolean onLongClick(View v) {
         if (v == mHeaderView.mApplicationIcon) {
@@ -619,5 +522,4 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
         }
         return false;
     }
-
 }

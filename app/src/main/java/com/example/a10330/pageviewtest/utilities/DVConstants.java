@@ -18,10 +18,6 @@ public class DVConstants {
         }
     }
     public static class Values {
-        public static class App {
-            public static String Key_DebugModeEnabled = "debugModeEnabled";
-        }
-
         public static class DView {
             public static final int PageStackMinOverscrollRange = 32;
             public static final int PageStackMaxOverscrollRange = 128;

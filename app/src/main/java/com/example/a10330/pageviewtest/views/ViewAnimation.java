@@ -10,15 +10,15 @@ import com.example.a10330.pageviewtest.utilities.ReferenceCountedTrigger;
  * Created by 10330 on 2017/11/5.
  */
 
-public class ViewAnimation {
+class ViewAnimation {
 
     /* The animation context for a task view animation into Recents */
     public static class PageViewEnterContext {
         // A trigger to run some logic when all the animations complete.  This works around the fact
         // that it is difficult to coordinate ViewPropertyAnimators
-        public ReferenceCountedTrigger postAnimationTrigger;
+        ReferenceCountedTrigger postAnimationTrigger;
         // An update listener to notify as the enter animation progresses (used for the home transition)
-        public ValueAnimator.AnimatorUpdateListener updateListener;
+        ValueAnimator.AnimatorUpdateListener updateListener;
 
         // These following properties are updated for each task view we start the enter animation on
 
@@ -27,11 +27,11 @@ public class ViewAnimation {
         // The task rect for the current stack
         Rect currentTaskRect;
         // The transform of the current task view
-        public PageViewTransform currentTaskTransform;
+        PageViewTransform currentTaskTransform;
         // The view index of the current task view
-        public int currentStackViewIndex;
+        int currentStackViewIndex;
         // The total number of task views
-        public int currentStackViewCount;
+        int currentStackViewCount;
 
         public PageViewEnterContext(ReferenceCountedTrigger t) {
             postAnimationTrigger = t;

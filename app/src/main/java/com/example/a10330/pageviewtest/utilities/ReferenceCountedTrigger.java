@@ -12,20 +12,13 @@ import java.util.ArrayList;
 
 public class ReferenceCountedTrigger {
 
-    Context mContext;
-    int mCount;
-    ArrayList<Runnable> mFirstIncRunnables = new ArrayList<Runnable>();
-    ArrayList<Runnable> mLastDecRunnables = new ArrayList<Runnable>();
-    Runnable mErrorRunnable;
-
+    private Context mContext;
+    private int mCount;
+    private ArrayList<Runnable> mFirstIncRunnables = new ArrayList<Runnable>();
+    private ArrayList<Runnable> mLastDecRunnables = new ArrayList<Runnable>();
+    private Runnable mErrorRunnable;
     // Convenience runnables
-    Runnable mIncrementRunnable = new Runnable() {
-        @Override
-        public void run() {
-            increment();
-        }
-    };
-    Runnable mDecrementRunnable = new Runnable() {
+    private Runnable mDecrementRunnable = new Runnable() {
         @Override
         public void run() {
             decrement();

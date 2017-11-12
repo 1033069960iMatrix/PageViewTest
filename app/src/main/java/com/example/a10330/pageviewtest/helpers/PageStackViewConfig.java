@@ -71,7 +71,7 @@ public class PageStackViewConfig {
     public int pageViewEnterFromAppDuration;
     public int pageViewEnterFromHomeDuration;
     public int pageViewEnterFromHomeStaggerDelay;
-    public int pageViewExitToAppDuration;
+    private int pageViewExitToAppDuration;
 //    public int pageViewExitToHomeDuration;
     public int pageViewRemoveAnimDuration;
     public int pageViewRemoveAnimTranslationXPx;

@@ -18,24 +18,13 @@ import java.util.HashMap;
  * The curve is defined such that at curve progress p = 0 is the end of the curve (the top of the
  * stack rect), and p = 1 at the start of the curve and the bottom of the stack rect.
  */
-public class PageStackViewLayoutAlgorithm<T> {
-    // These are all going to change
+class PageStackViewLayoutAlgorithm<T> {
+    //曾经有个VisibilityReport内部类，不知道有什么用
     private static final float StackPeekMinScale = 0.8f; // The min scale of the last card in the peek area 初始0.8负责最上面卡片的缩放比，
-    // A report of the visibility state of the stack
-    /*public class VisibilityReport {
-        public int numVisibleTasks;
-        public int numVisibleThumbnails;
-
-        *//**
-         * Package level ctor
-         *//*
-        VisibilityReport(int tasks, int thumbnails) {
-            numVisibleTasks = tasks;
-            numVisibleThumbnails = thumbnails;
-        }
-    }*/
     private PageStackViewConfig mConfig;
     // The various rects that define the stack view
+    // TODO: 2017/11/11 这几个矩形各自什么用
+    //mViewRect就是mStackVisibleRect   mStackRect和mTaskRect是加入上下padding的
     Rect mViewRect = new Rect();
     Rect mStackVisibleRect = new Rect();
     Rect mTaskRect = new Rect();
@@ -44,11 +33,10 @@ public class PageStackViewLayoutAlgorithm<T> {
     float mMinScrollP;
     float mMaxScrollP;
     float mInitialScrollP;
-//    private int mWithinAffiliationOffset;
     private int mBetweenAffiliationOffset;
     private HashMap<T, Float> mTaskProgressMap = new HashMap<T, Float>();
     // Log function
-    private static final float XScale = 1.75f;  // The large the XScale, the longer the flat area of the curve
+    private static final float XScale = 1.75f;  // The large the XScale, the longer the flat area of the curve调整矩形队列同一侧上下间角的路径
     private static final float LogBase = 3000;
     private static final int PrecisionSteps = 250;
     private static float[] xp;
@@ -57,48 +45,35 @@ public class PageStackViewLayoutAlgorithm<T> {
         mConfig = config;
         // Precompute the path
         initializeCurve();
-        int m=1;
     }
     /**
      * Computes the stack and task rects
      */
     void computeRects(int windowWidth, int windowHeight, Rect pageStackBounds) {//此时，pageStackBounds设置的也是前面的宽高，就是stack View的onmeasure得出的
-        // Compute the stack rects
         mViewRect.set(0, 0, windowWidth, windowHeight);
         mStackRect.set(pageStackBounds);//mViewRect和mStackViewRect和mStackVisibleRect在这个程序里是一样的
         mStackVisibleRect.set(pageStackBounds);
-//        mStackVisibleRect.bottom = mViewRect.bottom;
-
         int widthPadding = (int) (mConfig.pageStackWidthPaddingPct * mStackRect.width()+100);//47，主要负责每个卡片的宽度，100是自己加的
         int heightPadding = mConfig.pageStackTopPaddingPx;
         mStackRect.inset(widthPadding, heightPadding);
-
-        // Compute the task rect
-        int size = mStackRect.width();
-        int left = mStackRect.left + (mStackRect.width() - size) / 2;
-        mTaskRect.set(left, mStackRect.top,
-                left + size, mStackRect.top + size);//我觉的bottom算的有问题
-
-        // Update the affiliation offsets
+        mTaskRect.set(mStackRect);
+        // Update the affiliation offset
         float visibleTaskPct = 0.5f;//原来0.5
-//        mWithinAffiliationOffset = mConfig.taskBarHeight;
         mBetweenAffiliationOffset = (int) (visibleTaskPct * mTaskRect.height());//每个卡片上下间的距离
     }
-
     /**
      * Computes the minimum and maximum scroll progress values.  This method may be called before
      * the RecentsConfiguration is set, so we need to pass in the alt-tab state.
      */
     void computeMinMaxScroll(ArrayList<T> data, boolean launchedWithAltTab, boolean launchedFromHome) {
         // Clear the progress map
-        mTaskProgressMap.clear();
+        mTaskProgressMap.clear();// TODO: 2017/11/12 为何是用data绑定的呢 而不是pageView？
 
         // Return early if we have no tasks
         if (data.isEmpty()) {
             mMinScrollP = mMaxScrollP = 0;
             return;
         }
-
         // Note that we should account for the scale difference of the offsets at the screen bottom
         int taskHeight = mTaskRect.height();
         float pAtBottomOfStackRect = screenYToCurveProgress(mStackVisibleRect.bottom);
@@ -109,7 +84,6 @@ public class PageStackViewLayoutAlgorithm<T> {
         float pNavBarOffset = pAtBottomOfStackRect -
                 screenYToCurveProgress(mStackVisibleRect.bottom - (mStackVisibleRect.bottom -
                         mStackRect.bottom));
-
         // Update the task offsets
         float pAtFrontMostCardTop = 0.5f;
         int taskCount = data.size();
@@ -117,19 +91,16 @@ public class PageStackViewLayoutAlgorithm<T> {
             //Task task = tasks.get(i);
             //mTaskProgressMap.put(task.key, pAtFrontMostCardTop);
             mTaskProgressMap.put(data.get(i), pAtFrontMostCardTop);
-
             if (i < (taskCount - 1)) {
                 // Increment the peek height
-                // TODO: Might need adjustments
                 //float pPeek = task.group.isFrontMostTask(task) ?
                 //pBetweenAffiliateOffset : pWithinAffiliateOffset;
                 pAtFrontMostCardTop += pBetweenAffiliateOffset;//这个值我给改成/2后能控制每页显示的卡片数
             }
         }
-
         mMaxScrollP = pAtFrontMostCardTop - ((1f - pTaskHeightOffset - pNavBarOffset));
         mMinScrollP = data.size() == 1 ? Math.max(mMaxScrollP, 0f) : 0f;
-        if (launchedWithAltTab && launchedFromHome) {
+        if (launchedWithAltTab && launchedFromHome) {//如果条件为真，初始的画面就会在高处
             // Center the top most task, since that will be focused first
             mInitialScrollP = mMaxScrollP;
         } else {
@@ -137,68 +108,10 @@ public class PageStackViewLayoutAlgorithm<T> {
         }
         mInitialScrollP = Math.min(mMaxScrollP, Math.max(0, mInitialScrollP));
     }
-
-    /**
-     * Computes the maximum number of visible tasks and thumbnails.  Requires that
-     * computeMinMaxScroll() is called first.
-     */
-/*    public VisibilityReport computeStackVisibilityReport(ArrayList<T> data) {
-        if (data.size() <= 1) {
-            return new VisibilityReport(1, 1);
-        }
-
-        // Walk backwards in the task stack and count the number of tasks and visible thumbnails
-        int taskHeight = mTaskRect.height();
-        int numVisibleTasks = 1;
-        int numVisibleThumbnails = 1;
-        //float progress = mTaskProgressMap.get(tasks.get(tasks.size() - 1).key) - mInitialScrollP;
-
-        float progress = mTaskProgressMap.get(data.get(data.size() - 1)) - mInitialScrollP;
-        int prevScreenY = curveProgressToScreenY(progress);
-        for (int i = data.size() - 2; i >= 0; i--) {
-            //Task task = tasks.get(i);
-            //progress = mTaskProgressMap.get(task.key) - mInitialScrollP;
-            progress = mTaskProgressMap.get(data.get(i)) - mInitialScrollP;
-            if (progress < 0) {
-                break;
-            }
-
-            // TODO: Might need adjustments
-            //boolean isFrontMostTaskInGroup = task.group.isFrontMostTask(task);
-            boolean isFrontMostTaskInGroup = true;
-            if (isFrontMostTaskInGroup) {
-                float scaleAtP = curveProgressToScale(progress);
-                int scaleYOffsetAtP = (int) (((1f - scaleAtP) * taskHeight) / 2);
-                int screenY = curveProgressToScreenY(progress) + scaleYOffsetAtP;
-                boolean hasVisibleThumbnail = (prevScreenY - screenY) > mConfig.taskBarHeight;
-                if (hasVisibleThumbnail) {
-                    numVisibleThumbnails++;
-                    numVisibleTasks++;
-                    prevScreenY = screenY;
-                } else {
-                    // Once we hit the next front most task that does not have a visible thumbnail,
-                    // walk through remaining visible set
-                    for (int j = i; j >= 0; j--) {
-                        numVisibleTasks++;
-                        progress = mTaskProgressMap.get(data.get(i)) - mInitialScrollP;
-                        if (progress < 0) {
-                            break;
-                        }
-                    }
-                    break;
-                }
-            } else if (!isFrontMostTaskInGroup) {
-                // Affiliated task, no thumbnail
-                numVisibleTasks++;
-            }
-        }
-        return new VisibilityReport(numVisibleTasks, numVisibleThumbnails);
-    }*/
-
     /**
      * Update/get the transform
      */
-    public PageViewTransform getStackTransform(T key, float stackScroll,
+    PageViewTransform getStackTransform(T key, float stackScroll,
                                                PageViewTransform transformOut,
                                                PageViewTransform prevTransform) {
         // Return early if we have an invalid index
@@ -208,7 +121,6 @@ public class PageStackViewLayoutAlgorithm<T> {
         }
         return getStackTransform(mTaskProgressMap.get(key), stackScroll, transformOut, prevTransform);
     }
-
     /**
      * Update/get the transform
      */
@@ -247,15 +159,54 @@ public class PageStackViewLayoutAlgorithm<T> {
         transformOut.p = pTaskRelative;
         return transformOut;
     }
-
     /**
      * Returns the scroll to such task top = 1f;
      */
-    public float getStackScrollForTask(T key) {
+    float getStackScrollForTask(T key) {
         if (!mTaskProgressMap.containsKey(key)) return 0f;
         return mTaskProgressMap.get(key);
     }
-
+    /**
+     * Converts from the progress along the curve to a screen coordinate.
+     */
+    private int curveProgressToScreenY(float p) {
+        if (p < 0 || p > 1) return mStackVisibleRect.top + (int) (p * mStackVisibleRect.height());
+        float pIndex = p * PrecisionSteps;
+        int pFloorIndex = (int) Math.floor(pIndex);
+        int pCeilIndex = (int) Math.ceil(pIndex);
+        float xFraction = 0;
+        if (pFloorIndex < PrecisionSteps && (pCeilIndex != pFloorIndex)) {
+            float pFraction = (pIndex - pFloorIndex) / (pCeilIndex - pFloorIndex);
+            xFraction = (xp[pCeilIndex] - xp[pFloorIndex]) * pFraction;
+        }
+        float x = xp[pFloorIndex] + xFraction;
+        return mStackVisibleRect.top + (int) (x * mStackVisibleRect.height());
+    }
+    /**
+     * Converts from the progress along the curve to a scale.
+     */
+    private float curveProgressToScale(float p) {
+        if (p < 0) return StackPeekMinScale;
+        if (p > 1) return 1f;
+        float scaleRange = (1f - StackPeekMinScale);
+        return StackPeekMinScale + (p * scaleRange);
+    }
+    /**
+     * Converts from a screen coordinate to the progress along the curve.
+     */
+    float screenYToCurveProgress(int screenY) {
+        float x = (float) (screenY - mStackVisibleRect.top) / mStackVisibleRect.height();
+        if (x < 0 || x > 1) return x;
+        float xIndex = x * PrecisionSteps;
+        int xFloorIndex = (int) Math.floor(xIndex);
+        int xCeilIndex = (int) Math.ceil(xIndex);
+        float pFraction = 0;
+        if (xFloorIndex < PrecisionSteps && (xCeilIndex != xFloorIndex)) {
+            float xFraction = (xIndex - xFloorIndex) / (xCeilIndex - xFloorIndex);
+            pFraction = (px[xCeilIndex] - px[xFloorIndex]) * xFraction;
+        }
+        return px[xFloorIndex] + pFraction;
+    }
     /**
      * Initializes the curve.
      */
@@ -311,62 +262,16 @@ public class PageStackViewLayoutAlgorithm<T> {
             p += step;
         }
     }
-
     /**
      * Reverses and scales out x.
      */
     private static float reverse(float x) {
         return (-x * XScale) + 1;
     }
-
     /**
      * The log function describing the curve.
      */
     private static float logFunc(float x) {
-        return 1f - (float) (Math.pow(LogBase, reverse(x))) / (LogBase);
-    }
-
-    /**
-     * Converts from the progress along the curve to a screen coordinate.
-     */
-    private int curveProgressToScreenY(float p) {
-        if (p < 0 || p > 1) return mStackVisibleRect.top + (int) (p * mStackVisibleRect.height());
-        float pIndex = p * PrecisionSteps;
-        int pFloorIndex = (int) Math.floor(pIndex);
-        int pCeilIndex = (int) Math.ceil(pIndex);
-        float xFraction = 0;
-        if (pFloorIndex < PrecisionSteps && (pCeilIndex != pFloorIndex)) {
-            float pFraction = (pIndex - pFloorIndex) / (pCeilIndex - pFloorIndex);
-            xFraction = (xp[pCeilIndex] - xp[pFloorIndex]) * pFraction;
-        }
-        float x = xp[pFloorIndex] + xFraction;
-        return mStackVisibleRect.top + (int) (x * mStackVisibleRect.height());
-    }
-
-    /**
-     * Converts from the progress along the curve to a scale.
-     */
-    private float curveProgressToScale(float p) {
-        if (p < 0) return StackPeekMinScale;
-        if (p > 1) return 1f;
-        float scaleRange = (1f - StackPeekMinScale);
-        return StackPeekMinScale + (p * scaleRange);
-    }
-
-    /**
-     * Converts from a screen coordinate to the progress along the curve.
-     */
-    float screenYToCurveProgress(int screenY) {
-        float x = (float) (screenY - mStackVisibleRect.top) / mStackVisibleRect.height();
-        if (x < 0 || x > 1) return x;
-        float xIndex = x * PrecisionSteps;
-        int xFloorIndex = (int) Math.floor(xIndex);
-        int xCeilIndex = (int) Math.ceil(xIndex);
-        float pFraction = 0;
-        if (xFloorIndex < PrecisionSteps && (xCeilIndex != xFloorIndex)) {
-            float xFraction = (xIndex - xFloorIndex) / (xCeilIndex - xFloorIndex);
-            pFraction = (px[xCeilIndex] - px[xFloorIndex]) * xFraction;
-        }
-        return px[xFloorIndex] + pFraction;
+        return 1f - (float) (Math.pow(LogBase,reverse(x)) / (LogBase));
     }
 }

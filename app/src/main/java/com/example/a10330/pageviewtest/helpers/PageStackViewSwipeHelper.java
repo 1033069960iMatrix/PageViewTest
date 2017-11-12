@@ -1,5 +1,4 @@
 package com.example.a10330.pageviewtest.helpers;
-
 /**
  * Created by 10330 on 2017/11/5.
  */
@@ -17,7 +16,7 @@ import android.view.View;
 import android.view.animation.LinearInterpolator;
 //ok
 /**
- * This class facilitates帮助 swipe to dismiss. It defines an interface to be implemented by the
+ * This class facilitates帮助 swipe to dismiss. It defines an interface to be implemented
  * by the class hosting the views that need to swiped, and, using this interface, handles touch
  * events and translates / fades / animates the view as it is dismissed.
  */
@@ -49,14 +48,14 @@ public class PageStackViewSwipeHelper {
 
     private static LinearInterpolator sLinearInterpolator = new LinearInterpolator();
 
-    private float SWIPE_ESCAPE_VELOCITY = 100f; // dp/sec
-    private int DEFAULT_ESCAPE_ANIMATION_DURATION = 75; // ms
-    private int MAX_ESCAPE_ANIMATION_DURATION = 150; // ms
+    private static final float SWIPE_ESCAPE_VELOCITY = 100f; // dp/sec
+    private static final int DEFAULT_ESCAPE_ANIMATION_DURATION = 75; // ms
+    private static final int MAX_ESCAPE_ANIMATION_DURATION = 150; // ms
     private static final int SNAP_ANIM_LEN = SLOW_ANIMATIONS ? 1000 : 250; // ms
 
-    private static float ALPHA_FADE_START = 0.15f; // fraction of thumbnail width
+    private static final float ALPHA_FADE_START = 0.15f; // fraction of thumbnail width
     // where fade starts
-    static final float ALPHA_FADE_END = 0.65f; // fraction of thumbnail width
+    private static final float ALPHA_FADE_END = 0.65f; // fraction of thumbnail width
     // beyond which alpha->0
     private float mMinAlpha = 0f;
 
@@ -69,11 +68,11 @@ public class PageStackViewSwipeHelper {
     private boolean mDragging;
 
     private View mCurrView;
-    private boolean mCanCurrViewBeDimissed;
+    private boolean mCanCurrViewBeDismissed;
     private float mDensityScale;
 
-    private boolean mAllowSwipeTowardsStart = true;
-    private boolean mAllowSwipeTowardsEnd = true;
+    private static final boolean mAllowSwipeTowardsStart = true;
+    private static final boolean mAllowSwipeTowardsEnd = true;
     private boolean mRtl;
 
     public PageStackViewSwipeHelper(int swipeDirection, Callback callback, float densityScale,
@@ -98,9 +97,7 @@ public class PageStackViewSwipeHelper {
     }
 
     private ObjectAnimator createTranslationAnimation(View v, float newPos) {
-        ObjectAnimator anim = ObjectAnimator.ofFloat(v,
-                mSwipeDirection == X ? View.TRANSLATION_X : View.TRANSLATION_Y, newPos);
-        return anim;
+        return ObjectAnimator.ofFloat(v,mSwipeDirection==X?View.TRANSLATION_X:View.TRANSLATION_Y,newPos);
     }
 
     private float getPerpendicularVelocity(VelocityTracker vt) {//垂直的
@@ -162,11 +159,11 @@ public class PageStackViewSwipeHelper {
                 mVelocityTracker.clear();
                 if (mCurrView != null) {
                     mRtl = isLayoutRtl(mCurrView);
-                    mCanCurrViewBeDimissed = mCallback.canChildBeDismissed(mCurrView);
+                    mCanCurrViewBeDismissed = mCallback.canChildBeDismissed(mCurrView);
                     mVelocityTracker.addMovement(ev);
                     mInitialTouchPos = getPos(ev);
                 } else {
-                    mCanCurrViewBeDimissed = false;
+                    mCanCurrViewBeDismissed = false;
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -266,7 +263,7 @@ public class PageStackViewSwipeHelper {
     public boolean onTouchEvent(MotionEvent ev) {
         if (!mDragging) {
             if (!onInterceptTouchEvent(ev)) {
-                return mCanCurrViewBeDimissed;
+                return mCanCurrViewBeDismissed;
             }
         }
 
@@ -305,7 +302,7 @@ public class PageStackViewSwipeHelper {
             }
         }
         setTranslation(mCurrView, amount);
-        if (FADE_OUT_DURING_SWIPE && mCanCurrViewBeDimissed) {
+        if (FADE_OUT_DURING_SWIPE && mCanCurrViewBeDismissed) {
             float alpha = getAlphaForOffset(mCurrView);
             mCurrView.setAlpha(alpha);
         }
@@ -327,7 +324,7 @@ public class PageStackViewSwipeHelper {
     private void endSwipe(VelocityTracker velocityTracker) {
         velocityTracker.computeCurrentVelocity(1000 /* px/sec */);
         float velocity = getVelocity(velocityTracker);
-        float perpendicularVelocity = getPerpendicularVelocity(velocityTracker);
+        float perpendicularVelocity = getPerpendicularVelocity(velocityTracker);//垂直的速度
         float escapeVelocity = SWIPE_ESCAPE_VELOCITY * mDensityScale;
         float translation = getTranslation(mCurrView);
         // Decide whether to dismiss the current view

@@ -6,16 +6,14 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.widget.OverScroller;
-import android.widget.Scroller;
 
 import com.example.a10330.pageviewtest.helpers.PageStackViewConfig;
 import com.example.a10330.pageviewtest.utilities.DVUtils;
-//ok
 /**
  * Created by 10330 on 2017/11/5.
  */
 
-public class PageStackViewScroller {
+class PageStackViewScroller {
     public interface PageStackViewScrollerCallbacks {
         void onScrollChanged(float p);
     }
@@ -75,18 +73,13 @@ public class PageStackViewScroller {
     private void setStackScrollRaw(float s) {
         mStackScrollP = s;
     }
-
     /**
      * Sets the current stack scroll to the initial state when you first enter recents.
      *
-     * @return whether the stack progress changed.
      */
-    boolean setStackScrollToInitialState() {
-        float prevStackScrollP = mStackScrollP;
+    void setStackScrollToInitialState() {
         setStackScroll(getBoundedStackScroll(mLayoutAlgorithm.mInitialScrollP));
-        return Float.compare(prevStackScrollP, mStackScrollP) != 0;
     }
-
     /**
      * Bounds the current scroll if necessary
      */

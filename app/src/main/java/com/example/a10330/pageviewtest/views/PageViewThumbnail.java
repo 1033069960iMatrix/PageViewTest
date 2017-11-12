@@ -25,21 +25,19 @@ import com.example.a10330.pageviewtest.utilities.DVUtils;
  */
 
 public class PageViewThumbnail extends View {
-    PageStackViewConfig mConfig;
-
+    private PageStackViewConfig mConfig;
     // Drawing
-    float mDimAlpha;
-    Matrix mScaleMatrix = new Matrix();
-    Paint mDrawPaint = new Paint();
-    RectF mBitmapRect = new RectF();
-    RectF mLayoutRect = new RectF();
-    BitmapShader mBitmapShader;
-    LightingColorFilter mLightingColorFilter = new LightingColorFilter(0xffffffff, 0);
-
+    private float mDimAlpha;
+    private Matrix mScaleMatrix = new Matrix();
+    private Paint mDrawPaint = new Paint();
+    private RectF mBitmapRect = new RectF();
+    private RectF mLayoutRect = new RectF();
+    private BitmapShader mBitmapShader;
+    private LightingColorFilter mLightingColorFilter = new LightingColorFilter(0xffffffff, 0);
     // Thumbnail alpha
-    float mThumbnailAlpha;
-    ValueAnimator mThumbnailAlphaAnimator;
-    ValueAnimator.AnimatorUpdateListener mThumbnailAlphaUpdateListener
+    private float mThumbnailAlpha;
+    private ValueAnimator mThumbnailAlphaAnimator;
+    private ValueAnimator.AnimatorUpdateListener mThumbnailAlphaUpdateListener
             = new ValueAnimator.AnimatorUpdateListener() {
         @Override
         public void onAnimationUpdate(ValueAnimator animation) {
@@ -47,28 +45,23 @@ public class PageViewThumbnail extends View {
             updateThumbnailPaintFilter();
         }
     };
-
     // Task bar clipping, the top of this thumbnail can be clipped against the opaque header
     // bar that overlaps this thumbnail
-    View mTaskBar;
-    Rect mClipRect = new Rect();
-
+    private View mTaskBar;
+    private Rect mClipRect = new Rect();
     // Visibility optimization, if the thumbnail height is less than the height of the header
     // bar for the task view, then just mark this thumbnail view as invisible
-    boolean mInvisible;
+    private boolean mInvisible;
 
     public PageViewThumbnail(Context context) {
         this(context, null);
     }
-
     public PageViewThumbnail(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
-
     public PageViewThumbnail(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
     }
-
     public PageViewThumbnail(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         mConfig = PageStackViewConfig.getInstance();
