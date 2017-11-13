@@ -71,7 +71,7 @@ public class PageStackViewConfig {
     public int pageViewEnterFromAppDuration;
     public int pageViewEnterFromHomeDuration;
     public int pageViewEnterFromHomeStaggerDelay;
-    private int pageViewExitToAppDuration;
+//    private int pageViewExitToAppDuration;
 //    public int pageViewExitToHomeDuration;
     public int pageViewRemoveAnimDuration;
     public int pageViewRemoveAnimTranslationXPx;
@@ -203,7 +203,7 @@ public class PageStackViewConfig {
         pageViewEnterFromAppDuration = res.getInteger(R.integer.task_enter_from_app_duration);
         pageViewEnterFromHomeDuration = res.getInteger(R.integer.task_enter_from_home_duration);
         pageViewEnterFromHomeStaggerDelay = res.getInteger(R.integer.task_enter_from_home_stagger_delay);
-        pageViewExitToAppDuration = res.getInteger(R.integer.task_exit_to_app_duration);
+//        pageViewExitToAppDuration = res.getInteger(R.integer.task_exit_to_app_duration);
 //        pageViewExitToHomeDuration = res.getInteger(R.integer.task_exit_to_home_duration);
         pageViewRemoveAnimDuration = res.getInteger(R.integer.animate_task_view_remove_duration);
         pageViewRemoveAnimTranslationXPx = res.getDimensionPixelSize(R.dimen.task_view_remove_anim_translation_x);

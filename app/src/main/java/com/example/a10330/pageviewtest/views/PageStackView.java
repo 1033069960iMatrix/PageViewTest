@@ -172,10 +172,10 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
     }
     @Override
     public void computeScroll() {
-        mStackScroller.computeScroll();//手指松开后继续滑动就靠它了
+//        mStackScroller.computeScroll();//手指松开后继续滑动就靠它了
         // Synchronize the views
-        synchronizeStackViewsWithModel();
-        clipTaskViews();
+        synchronizeStackViewsWithModel();//去掉这个只是不能滑动，还能显示，如果onMeasure里再去掉，就不行了
+//        clipTaskViews();
     }
     /**
      * This is called with the full window width and height to allow stack view children to
@@ -189,11 +189,11 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
         computeRects(width, height, mPageStackBounds, mConfig.launchedWithAltTab, mConfig.launchedFromHome);
         // If this is the first layout, then scroll to the front of the stack and synchronize the
         // stack views immediately to load all the views
-        if (mAwaitingFirstLayout) {
+/*        if (mAwaitingFirstLayout) {
             mStackScroller.setStackScrollToInitialState();
             requestSynchronizeStackViewsWithModel();
             synchronizeStackViewsWithModel();
-        }
+        }*/
         //以后去掉注释 上面的代码跟布局没关系，只是一开始跳到前几个显示
         // Measure each of the TaskViews
         int childCount = getChildCount();
@@ -303,7 +303,7 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
             mStackScroller.boundScroll();
         }
         // Animate all the tasks into place
-        requestSynchronizeStackViewsWithModel(200);
+//        requestSynchronizeStackViewsWithModel(200);// TODO: 2017/11/13 别忘了加上
         T newFrontMostPageData = mCallback.getData().size() > 0 ?
                 mCallback.getData().get(mCallback.getData().size() - 1)
                 : null;
@@ -361,17 +361,17 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
     private void requestSynchronizeStackViewsWithModel() {
         requestSynchronizeStackViewsWithModel(0);
     }
-    private void requestSynchronizeStackViewsWithModel(int duration) {//给方法里的内容去掉后不能滑动，只能点击小差
+    private void requestSynchronizeStackViewsWithModel(int duration) {
         if (!mPageStackViewDirty) {
             invalidate();
             mPageStackViewDirty = true;
         }
-        if (mAwaitingFirstLayout) {
+/*        if (mAwaitingFirstLayout) {
             // Skip the animation if we are awaiting first layout
             mStackViewsAnimationDuration = 0;
         } else {
             mStackViewsAnimationDuration = Math.max(mStackViewsAnimationDuration, duration);
-        }
+        }*/
     }
     /**
      * Requests that the views clipping be updated.
@@ -625,7 +625,7 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
     /**
      * Handler for the first layout.
      */
-    private void onFirstLayout() {
+/*    private void onFirstLayout() {
         int offscreenY = mLayoutAlgorithm.mViewRect.bottom -
                 (mLayoutAlgorithm.mTaskRect.top - mLayoutAlgorithm.mViewRect.top);
         int childCount = getChildCount();
@@ -654,11 +654,11 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
             }
         }
         mUIDozeTrigger.startDozing();
-    }
+    }*/
     /**
      * Requests this task stacks to start it's enter-recents animation
      */
-    private void startEnterRecentsAnimation(ViewAnimation.PageViewEnterContext ctx) {
+/*    private void startEnterRecentsAnimation(ViewAnimation.PageViewEnterContext ctx) {
         // If we are still waiting to layout, then just defer until then
         if (mAwaitingFirstLayout) {
             mStartEnterAnimationRequestedAfterLayout = true;
@@ -693,7 +693,7 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
                 }
             });
         }
-    }
+    }*/
 /*
     @Override
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
@@ -706,7 +706,7 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
         requestLayout();
         return insets.consumeSystemWindowInsets();
     }*/
-    private void onStackTaskRemoved(PageView<T> removedView) {
+    private void onStackPageRemoved(PageView<T> removedView) {
         // Remove the view associated with this task, we can't rely on updateTransforms
         // to work here because the task is no longer in the list
         if (removedView != null) {
@@ -843,7 +843,7 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
         boolean taskWasFocused = dcv.isFocusedTask();
         T key = dcv.getAttachedKey();
         int taskIndex = mCallback.getData().indexOf(key);
-        onStackTaskRemoved(dcv);
+        onStackPageRemoved(dcv);
         // If the dismissed task was focused, then we should focus the new task in the same index
         if (taskIndex != -1 && taskWasFocused) {
             int nextTaskIndex = Math.min(mCallback.getData().size() - 1, taskIndex - 1);

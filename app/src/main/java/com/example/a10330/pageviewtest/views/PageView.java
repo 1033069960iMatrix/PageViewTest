@@ -84,27 +84,6 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
         }*/
         setOutlineProvider(mViewBounds);
     }
-    void setCallbacks(PageViewCallbacks cb) {
-        mCb = cb;
-    }
-    /**
-     * Resets this pageView for reuse.
-     */
- /*   void reset() {
-        resetViewProperties();
-        resetNoUserInteractionState();
-        setClipViewInStack(false);
-        setCallbacks(null);
-    }*/
-    T getAttachedKey() {
-        return mKey;
-    }
-    /**
-     * Returns the view bounds.
-     */
-    AnimateablePageViewBounds getViewBounds() {
-        return mViewBounds;
-    }
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -168,7 +147,7 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
      * Prepares this task view for the enter-recents animations.  This is called earlier in the
      * first layout because the actual animation into recents may take a long time.
      */
-    void prepareEnterRecentsAnimation(boolean isPageViewLaunchTargetTask,
+/*    void prepareEnterRecentsAnimation(boolean isPageViewLaunchTargetTask,
                                       boolean occludesLaunchTarget, int offscreenY) {
         int initialDim = mDimAlpha;
         if (mConfig.launchedHasConfigurationChanged) {
@@ -193,11 +172,11 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
         setDim(initialDim);
         // Prepare the thumbnail view alpha
         mThumbnailView.prepareEnterRecentsAnimation(isPageViewLaunchTargetTask);
-    }
+    }*/
     /**
      * Animates this task view as it enters recents
      */
-    void startEnterRecentsAnimation(final ViewAnimation.PageViewEnterContext ctx) {
+/*    void startEnterRecentsAnimation(final ViewAnimation.PageViewEnterContext ctx) {
         Log.i(getClass().getSimpleName(), "startEnterRecentsAnimation");
         final PageViewTransform transform = ctx.currentTaskTransform;
         int startDelay = 0;
@@ -241,14 +220,13 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
                 enableFocusAnimations();
             }
         }, startDelay);
-    }
+    }*/
     /**
      * Animates the deletion of this task view
      */
-    void startDeleteTaskAnimation(final Runnable r) {
+    private void startDeleteTaskAnimation(final Runnable r) {
         // Disabling clipping with the stack while the view is animating away
         setClipViewInStack(false);
-
         animate().translationX(mConfig.pageViewRemoveAnimTranslationXPx)
                 .alpha(0f)
                 .setStartDelay(0)
@@ -264,7 +242,6 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
                         // the runnabled passed in may start an animation which also uses layers
                         // so we defer all this by posting this.
                         r.run();
-
                         // Re-enable clipping with the stack (we will reuse this view)
                         setClipViewInStack(true);
                     }
@@ -294,7 +271,7 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
     /**
      * Dismisses this task.
      */
-    void dismissTask() {
+    private void dismissTask() {
         // Animate out the view and call the callback
         final PageView<T> tv = this;
         startDeleteTaskAnimation(new Runnable() {
@@ -323,6 +300,27 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
                 mCb.onPageViewClipStateChanged(this);
             }
         }
+    }
+    void setCallbacks(PageViewCallbacks cb) {
+        mCb = cb;
+    }
+    /**
+     * Resets this pageView for reuse.
+     */
+ /*   void reset() {
+        resetViewProperties();
+        resetNoUserInteractionState();
+        setClipViewInStack(false);
+        setCallbacks(null);
+    }*/
+    T getAttachedKey() {
+        return mKey;
+    }
+    /**
+     * Returns the view bounds.
+     */
+    AnimateablePageViewBounds getViewBounds() {
+        return mViewBounds;
     }
     private void setTaskProgress(float p) {
         mTaskProgress = p;
@@ -455,7 +453,6 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
                              String headerTitle, int headerBgColor) {
         if (!isBound() || !mKey.equals(key))
             return;
-
         if (mThumbnailView != null && mHeaderView != null) {
             // Bind each of the views to the new task data
             mThumbnailView.rebindToTask(thumbnail);
@@ -463,8 +460,6 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
             // Rebind any listeners
             mHeaderView.mApplicationIcon.setOnClickListener(this);
             mHeaderView.mDismissButton.setOnClickListener(this);
-
-            // TODO: Check if this functionality is needed
             mHeaderView.mApplicationIcon.setOnLongClickListener(this);
         }
     }
@@ -476,9 +471,7 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
             // Unbind any listeners
             mHeaderView.mApplicationIcon.setOnClickListener(null);
             mHeaderView.mDismissButton.setOnClickListener(null);
-            if (DVConstants.DebugFlags.App.EnableDevAppInfoOnLongPress) {
-                mHeaderView.mApplicationIcon.setOnLongClickListener(null);
-            }
+            mHeaderView.mApplicationIcon.setOnLongClickListener(null);
         }
     }
     /**
@@ -490,7 +483,7 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
     @Override
     public void onClick(final View v) {
         final PageView<T> tv = this;
-        final boolean delayViewClick = (v != this);
+        final boolean delayViewClick = (v != this);// TODO: 2017/11/13 为何还有这种可能？
         if (delayViewClick) {
             // We purposely post the handler delayed to allow for the touch feedback to draw
             postDelayed(new Runnable() {
