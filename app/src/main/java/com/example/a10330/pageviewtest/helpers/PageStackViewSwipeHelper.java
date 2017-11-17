@@ -233,7 +233,6 @@ public class PageStackViewSwipeHelper {
         });
         anim.start();
     }
-
     private void snapChild(final View view, float velocity) {
         final boolean canAnimViewBeDismissed = mCallback.canChildBeDismissed(view);
         ValueAnimator anim = createTranslationAnimation(view, 0);

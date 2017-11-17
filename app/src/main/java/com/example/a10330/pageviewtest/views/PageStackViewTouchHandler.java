@@ -18,14 +18,11 @@ import com.example.a10330.pageviewtest.utilities.DVConstants;
 
 public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callback {
     private static int INACTIVE_POINTER_ID = -1;
-
     private PageStackViewConfig mConfig;
     private PageStackView mPageStackView;
     private PageStackViewScroller mScroller;
     private VelocityTracker mVelocityTracker;
-
     private boolean mIsScrolling;
-
     private float mInitialP;
     private float mLastP;
     private float mTotalPMotion;
@@ -33,14 +30,12 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
     private int mLastMotionX, mLastMotionY;
     private int mActivePointerId = INACTIVE_POINTER_ID;
     private PageView mActivePageView = null;
-
     private int mMinimumVelocity;
     private int mMaximumVelocity;
     // The scroll touch slop is used to calculate when we start scrolling
     private int mScrollTouchSlop;
     private PageStackViewSwipeHelper mSwipeHelper;
     private boolean mInterceptedBySwipeHelper;
-
     PageStackViewTouchHandler(Context context, PageStackView dv,
                                      PageStackViewConfig config, PageStackViewScroller scroller) {
         ViewConfiguration configuration = ViewConfiguration.get(context);
@@ -58,64 +53,13 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
     }
 
     /**
-     * Velocity tracker helpers
-     */
-    private void initOrResetVelocityTracker() {
-        if (mVelocityTracker == null) {
-            mVelocityTracker = VelocityTracker.obtain();
-        } else {
-            mVelocityTracker.clear();
-        }
-    }
-
-    private void initVelocityTrackerIfNotExists() {
-        if (mVelocityTracker == null) {
-            mVelocityTracker = VelocityTracker.obtain();
-        }
-    }
-
-    private void recycleVelocityTracker() {
-        if (mVelocityTracker != null) {
-            mVelocityTracker.recycle();
-            mVelocityTracker = null;
-        }
-    }
-
-    /**
-     * Returns the view at the specified coordinates坐标
-     */
-    private PageView findViewAtPoint(int x, int y) {
-        int childCount = mPageStackView.getChildCount();
-        for (int i = childCount - 1; i >= 0; i--) {
-            PageView tv = (PageView) mPageStackView.getChildAt(i);
-            if (tv.getVisibility() == View.VISIBLE) {
-                if (mPageStackView.isTransformedTouchPointInView(x, y, tv)) {
-                    return tv;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Constructs a simulated motion event for the current stack scroll.
-     */
-    private MotionEvent createMotionEventForStackScroll(MotionEvent ev) {
-        MotionEvent pev = MotionEvent.obtainNoHistory(ev);
-        pev.setLocation(0, mScroller.progressToScrollRange(mScroller.getStackScroll()));
-        return pev;
-    }
-
-    /**
      * Touch preprocessing for handling below
      */
     boolean onInterceptTouchEvent(MotionEvent ev) {
-        // Return early if we have no children
         boolean hasChildren = (mPageStackView.getChildCount() > 0);
         if (!hasChildren) {
             return false;
         }
-
         // Pass through to swipe helper if we are swiping
         mInterceptedBySwipeHelper = mSwipeHelper.onInterceptTouchEvent(ev);
         if (mInterceptedBySwipeHelper) {
@@ -143,7 +87,6 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
             }
             case MotionEvent.ACTION_MOVE: {
                 if (mActivePointerId == INACTIVE_POINTER_ID) break;
-
                 // Initialize the velocity tracker if necessary
                 initVelocityTrackerIfNotExists();
                 mVelocityTracker.addMovement(createMotionEventForStackScroll(ev));
@@ -169,7 +112,7 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP: {
                 // Animate the scroll back if we've cancelled
-                mScroller.animateBoundScroll();
+//                mScroller.animateBoundScroll();//去掉了，没什么用
                 // Reset the drag state and the velocity tracker
                 mIsScrolling = false;
                 mActivePointerId = INACTIVE_POINTER_ID;
@@ -179,7 +122,6 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
                 break;
             }
         }
-
         return wasScrolling || mIsScrolling;
     }
 
@@ -192,15 +134,12 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
         if (!hasChildren) {
             return false;
         }
-
         // Pass through to swipe helper if we are swiping
         if (mInterceptedBySwipeHelper && mSwipeHelper.onTouchEvent(ev)) {
             return true;
         }
-
         // Update the velocity tracker
         initVelocityTrackerIfNotExists();
-
         int action = ev.getAction();
         switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN: {
@@ -262,7 +201,7 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
                         deltaP *= (1f - (Math.min(maxOverScroll, overScrollAmount)
                                 / maxOverScroll));
                     }
-                    mScroller.setStackScroll(curStackScroll + deltaP);
+                    mScroller.setStackScroll(curStackScroll + deltaP);//跟手逻辑在这吧
                 }
                 mLastMotionX = x;
                 mLastMotionY = y;
@@ -292,7 +231,6 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
                     // Animate the scroll back into bounds
                     mScroller.animateBoundScroll();
                 }
-
                 mActivePointerId = INACTIVE_POINTER_ID;
                 mIsScrolling = false;
                 mTotalPMotion = 0;
@@ -357,17 +295,14 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
     /**
      * * SwipeHelper Implementation ***
      */
-
     @Override
     public View getChildAtPosition(MotionEvent ev) {
         return findViewAtPoint((int) ev.getX(), (int) ev.getY());
     }
-
     @Override
     public boolean canChildBeDismissed(View v) {
         return true;
     }
-
     @Override
     public void onBeginDrag(View v) {
         PageView tv = (PageView) v;
@@ -378,7 +313,7 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
         // Disallow parents from intercepting touch events
         final ViewParent parent = mPageStackView.getParent();
         if (parent != null) {
-            parent.requestDisallowInterceptTouchEvent(true);
+            parent.requestDisallowInterceptTouchEvent(true);//阻止父层的View截获touch事件
         }
     }
 
@@ -411,4 +346,46 @@ public class PageStackViewTouchHandler implements PageStackViewSwipeHelper.Callb
     public void onDragCancelled(View v) {
         // Do nothing
     }
+    private void initOrResetVelocityTracker() {
+        if (mVelocityTracker == null) {
+            mVelocityTracker = VelocityTracker.obtain();
+        } else {
+            mVelocityTracker.clear();
+        }
+    }
+    private void initVelocityTrackerIfNotExists() {
+        if (mVelocityTracker == null) {
+            mVelocityTracker = VelocityTracker.obtain();
+        }
+    }
+    private void recycleVelocityTracker() {
+        if (mVelocityTracker != null) {
+            mVelocityTracker.recycle();
+            mVelocityTracker = null;
+        }
+    }
+    /**
+     * Returns the view at the specified coordinates坐标
+     */
+    private PageView findViewAtPoint(int x, int y) {
+        int childCount = mPageStackView.getChildCount();
+        for (int i = childCount - 1; i >= 0; i--) {
+            PageView tv = (PageView) mPageStackView.getChildAt(i);
+            if (tv.getVisibility() == View.VISIBLE) {
+                if (mPageStackView.isTransformedTouchPointInView(x, y, tv)) {
+                    return tv;
+                }
+            }
+        }
+        return null;
+    }
+    /**
+     * Constructs a simulated motion event for the current stack scroll.
+     */
+    private MotionEvent createMotionEventForStackScroll(MotionEvent ev) {
+        MotionEvent pev = MotionEvent.obtainNoHistory(ev);
+        pev.setLocation(0, mScroller.progressToScrollRange(mScroller.getStackScroll()));
+        return pev;
+    }
+
 }

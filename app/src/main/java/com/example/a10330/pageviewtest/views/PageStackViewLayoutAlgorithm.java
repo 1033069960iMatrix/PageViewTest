@@ -22,8 +22,6 @@ class PageStackViewLayoutAlgorithm<T> {
     //曾经有个VisibilityReport内部类，不知道有什么用
     private static final float StackPeekMinScale = 0.8f; // The min scale of the last card in the peek area 初始0.8负责最上面卡片的缩放比，
     private PageStackViewConfig mConfig;
-    // The various rects that define the stack view
-    // TODO: 2017/11/11 这几个矩形各自什么用
     //mViewRect就是mStackVisibleRect   mStackRect和mTaskRect是加入上下padding的
     Rect mViewRect = new Rect();
     Rect mStackVisibleRect = new Rect();
@@ -53,7 +51,7 @@ class PageStackViewLayoutAlgorithm<T> {
         mViewRect.set(0, 0, windowWidth, windowHeight);
         mStackRect.set(pageStackBounds);//mViewRect和mStackViewRect和mStackVisibleRect在这个程序里是一样的
         mStackVisibleRect.set(pageStackBounds);
-        int widthPadding = (int) (mConfig.pageStackWidthPaddingPct * mStackRect.width()+100);//47，主要负责每个卡片的宽度，100是自己加的
+        int widthPadding = (int) (mConfig.pageStackWidthPaddingPct * mStackRect.width());//47，主要负责每个卡片的宽度，100是自己加的
         int heightPadding = mConfig.pageStackTopPaddingPx;
         mStackRect.inset(widthPadding, heightPadding);
         mTaskRect.set(mStackRect);
@@ -68,7 +66,6 @@ class PageStackViewLayoutAlgorithm<T> {
     void computeMinMaxScroll(ArrayList<T> data, boolean launchedWithAltTab, boolean launchedFromHome) {
         // Clear the progress map
         mTaskProgressMap.clear();// TODO: 2017/11/12 为何是用data绑定的呢 而不是pageView？
-
         // Return early if we have no tasks
         if (data.isEmpty()) {
             mMinScrollP = mMaxScrollP = 0;
@@ -85,7 +82,7 @@ class PageStackViewLayoutAlgorithm<T> {
                 screenYToCurveProgress(mStackVisibleRect.bottom - (mStackVisibleRect.bottom -
                         mStackRect.bottom));
         // Update the task offsets
-        float pAtFrontMostCardTop = 0.5f;
+        float pAtFrontMostCardTop = 0.1f;//0.5f默认,数值改大了会导致最上面的划走了回不来，负责1号卡片的最下滑动位置
         int taskCount = data.size();
         for (int i = 0; i < taskCount; i++) {
             //Task task = tasks.get(i);
@@ -144,7 +141,7 @@ class PageStackViewLayoutAlgorithm<T> {
                 return transformOut;
             }
         }
-        float scale = curveProgressToScale(pBounded);
+        float scale = curveProgressToScale(pBounded);//0.8和1之间的值
         int scaleYOffset = (int) (((1f - scale) * mTaskRect.height()) / 2);
         int minZ = mConfig.pageViewTranslationZMinPx;
         int maxZ = mConfig.pageViewTranslationZMaxPx;
@@ -196,7 +193,7 @@ class PageStackViewLayoutAlgorithm<T> {
      */
     float screenYToCurveProgress(int screenY) {
         float x = (float) (screenY - mStackVisibleRect.top) / mStackVisibleRect.height();
-        if (x < 0 || x > 1) return x;
+//        if (x < 0 || x > 1) return x;
         float xIndex = x * PrecisionSteps;
         int xFloorIndex = (int) Math.floor(xIndex);
         int xCeilIndex = (int) Math.ceil(xIndex);
@@ -273,5 +270,6 @@ class PageStackViewLayoutAlgorithm<T> {
      */
     private static float logFunc(float x) {
         return 1f - (float) (Math.pow(LogBase,reverse(x)) / (LogBase));
+//        return (float) 1/x;
     }
 }

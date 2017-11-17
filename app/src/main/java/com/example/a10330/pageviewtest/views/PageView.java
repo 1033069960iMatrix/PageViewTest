@@ -92,7 +92,7 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
         mThumbnailView =findViewById(R.id.task_view_thumbnail);
         mThumbnailView.updateClipToTaskBar(mHeaderView);
     }
-  /*  @Override
+    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
@@ -102,7 +102,7 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
 
         // Measure the content
         mPageViewContent.measure(MeasureSpec.makeMeasureSpec(widthWithoutPadding, MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(widthWithoutPadding, MeasureSpec.EXACTLY));
+                MeasureSpec.makeMeasureSpec(heightWithoutPadding, MeasureSpec.EXACTLY));
 
         // Measure the bar view, and action button
         mHeaderView.measure(MeasureSpec.makeMeasureSpec(widthWithoutPadding, MeasureSpec.EXACTLY),
@@ -111,10 +111,10 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
         // Measure the thumbnail to be square
         mThumbnailView.measure(
                 MeasureSpec.makeMeasureSpec(widthWithoutPadding, MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(widthWithoutPadding, MeasureSpec.EXACTLY));
+                MeasureSpec.makeMeasureSpec(heightWithoutPadding, MeasureSpec.EXACTLY));
         setMeasuredDimension(width, height);
         invalidateOutline();
-    }*/
+    }
   //不用重写也行
     /**
      * Synchronizes this view's properties with the task's transform

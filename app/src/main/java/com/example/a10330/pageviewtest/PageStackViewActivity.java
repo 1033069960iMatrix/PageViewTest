@@ -75,7 +75,7 @@ public class PageStackViewActivity extends AppCompatActivity {
 
         if (mEntries == null) {
             mEntries = new ArrayList<>();
-            for (int i = 1; i < 20; i++) {
+            for (int i = 1; i < 50; i++) {
                 Datum datum = new Datum();
                 datum.id = generateUniqueKey();
                 datum.link = "http://lorempixel.com/" + imageSize + "/" + imageSize
