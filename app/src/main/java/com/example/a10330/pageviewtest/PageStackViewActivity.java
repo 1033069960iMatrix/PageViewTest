@@ -41,7 +41,7 @@ public class PageStackViewActivity extends AppCompatActivity {
     //    private Drawable mBackgroundScrim=new ColorDrawable(Color.argb((int)(0.93*255),255,165,0)).mutate();
     // Retain position on configuration change
     // imageSize to pass to http://lorempixel.com
-    int scrollToChildIndex = -1, imageSize = 500;
+    private int scrollToChildIndex = -1, imageSize = 500;
     private static int KEY = 0;
     // SavedInstance bundle keys
     final String CURRENT_SCROLL = "current.scroll", CURRENT_LIST = "current.list";
@@ -58,7 +58,7 @@ public class PageStackViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_page_view);
 //        getWindow().setBackgroundDrawable(mBackgroundScrim);
 
-        mPageStackView = (PageStackView) findViewById(R.id.pageStackView);
+        mPageStackView =findViewById(R.id.pageStackView);
         mDefaultThumbnail = BitmapFactory.decodeResource(getResources(),
                 R.drawable.default_thumbnail);
         mDefaultHeaderIcon = getResources().getDrawable(R.drawable.default_header_icon);

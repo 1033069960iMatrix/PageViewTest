@@ -44,7 +44,7 @@ public class PageViewThumbnail extends View {
         @Override
         public void onAnimationUpdate(ValueAnimator animation) {
             mThumbnailAlpha = (float) animation.getAnimatedValue();
-            updateThumbnailPaintFilter();
+//            updateThumbnailPaintFilter();
         }
     };
     // Task bar clipping, the top of this thumbnail can be clipped against the opaque header
@@ -66,27 +66,27 @@ public class PageViewThumbnail extends View {
     }
     public PageViewThumbnail(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        mConfig = PageStackViewConfig.getInstance();
+//        mConfig = PageStackViewConfig.getInstance();
 //        mDrawPaint.setColorFilter(mLightingColorFilter);
 //        mDrawPaint.setFilterBitmap(true);
         mDrawPaint.setAntiAlias(true);
     }
-
+/*
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         mThumbnailAlpha = mConfig.pageViewThumbnailAlpha;
-        updateThumbnailPaintFilter();
-    }
-
+//        updateThumbnailPaintFilter();
+    }*/
+/*
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        if (changed) {
+*//*        if (changed) {
             mLayoutRect.set(0, 0, getWidth(), getHeight());
-            updateThumbnailScale();
-        }
-    }
+//            updateThumbnailScale();
+        }*//*
+    }*/
     Random mRandom=new Random();
     int ranColor = 0xff000000 | mRandom.nextInt(0x00ffffff);
     @Override
@@ -96,9 +96,7 @@ public class PageViewThumbnail extends View {
         }
         mDrawPaint.setColor(ranColor);                        //设置画笔颜色
 //        canvas.drawColor(Color.YELLOW);                 //设置背景颜色
-        canvas.drawRoundRect(0, 190, getWidth(), getHeight(),
-                mConfig.pageViewRoundedCornerRadiusPx,
-                mConfig.pageViewRoundedCornerRadiusPx, mDrawPaint);
+        canvas.drawRect(0, 190, getWidth(), getHeight(), mDrawPaint);
 //        canvas.drawBitmap(new Rect(0,200,getWidth(),getWidth()),new Rect(0,200,getWidth(),getWidth()),new Paint());
     }
 
@@ -124,8 +122,8 @@ public class PageViewThumbnail extends View {
     /**
      * Updates the paint to draw the thumbnail.
      */
-    private void updateThumbnailPaintFilter() {
-/*        if (mInvisible) {
+/*    private void updateThumbnailPaintFilter() {
+        if (mInvisible) {
             return;
         }
         int mul = (int) ((1.0f - mDimAlpha) * mThumbnailAlpha * 255);
@@ -141,18 +139,18 @@ public class PageViewThumbnail extends View {
             mDrawPaint.setColorFilter(null);
             mDrawPaint.setColor(Color.argb(255, grey, grey, grey));
         }
-        invalidate();*/
-    }
+        invalidate();
+    }*/
 
     /**
      * Updates the thumbnail shader's scale transform.
      */
-    void updateThumbnailScale() {
-/*        if (mBitmapShader != null) {
+/*    void updateThumbnailScale() {
+        if (mBitmapShader != null) {
             mScaleMatrix.setRectToRect(mBitmapRect, mLayoutRect, Matrix.ScaleToFit.FILL);
             mBitmapShader.setLocalMatrix(mScaleMatrix);
-        }*/
-    }
+        }
+    }*/
 
     /**
      * Updates the clip rect based on the given task bar.
@@ -207,11 +205,11 @@ public class PageViewThumbnail extends View {
         setThumbnail(null);
     }
 
-    Bitmap mThumbnail;
+/*    Bitmap mThumbnail;
 
     public Bitmap getThumbnail() {
         return mThumbnail;
-    }
+    }*/
 
     /**
      * Handles focus changes.
@@ -232,6 +230,7 @@ public class PageViewThumbnail extends View {
      * Prepares for the enter recents animation, this gets called before the the view
      * is first visible and will be followed by a startEnterRecentsAnimation() call.
      */
+/*
     void prepareEnterRecentsAnimation(boolean ispageViewLaunchTargetTask) {
         if (ispageViewLaunchTargetTask) {
             mThumbnailAlpha = 1f;
@@ -240,11 +239,12 @@ public class PageViewThumbnail extends View {
         }
         updateThumbnailPaintFilter();
     }
+*/
 
     /**
      * Starts a new thumbnail alpha animation.
      */
-    void startFadeAnimation(float finalAlpha, int delay, int duration, final Runnable postAnimRunnable) {
+/*    void startFadeAnimation(float finalAlpha, int delay, int duration, final Runnable postAnimRunnable) {
         DVUtils.cancelAnimationWithoutCallbacks(mThumbnailAlphaAnimator);
         mThumbnailAlphaAnimator = ValueAnimator.ofFloat(mThumbnailAlpha, finalAlpha);
         mThumbnailAlphaAnimator.setStartDelay(delay);
@@ -260,5 +260,5 @@ public class PageViewThumbnail extends View {
             });
         }
         mThumbnailAlphaAnimator.start();
-    }
+    }*/
 }

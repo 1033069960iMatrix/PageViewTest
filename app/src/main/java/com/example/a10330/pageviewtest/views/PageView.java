@@ -90,7 +90,7 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
         mPageViewContent =findViewById(R.id.page_view_content);
         mHeaderView =findViewById(R.id.task_view_bar);
         mThumbnailView =findViewById(R.id.task_view_thumbnail);
-        mThumbnailView.updateClipToTaskBar(mHeaderView);
+//        mThumbnailView.updateClipToTaskBar(mHeaderView);
     }
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -136,7 +136,7 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
             mTaskProgressAnimator.setDuration(duration);
             mTaskProgressAnimator.addUpdateListener(mUpdateDimListener);
             mTaskProgressAnimator.start();
-        }
+        }//改变阴影的
     }
     void resetViewProperties() {
         setDim(0);
@@ -222,6 +222,12 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
         }, startDelay);
     }*/
     /**
+     * Animates this task view if the user does not interact with the stack after a certain time.
+     */
+    void startNoUserInteractionAnimation() {
+        mHeaderView.startNoUserInteractionAnimation();
+    }
+    /**
      * Animates the deletion of this task view
      */
     private void startDeleteTaskAnimation(final Runnable r) {
@@ -243,16 +249,10 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
                         // so we defer all this by posting this.
                         r.run();
                         // Re-enable clipping with the stack (we will reuse this view)
-                        setClipViewInStack(true);
+//                        setClipViewInStack(true);
                     }
                 })
                 .start();
-    }
-    /**
-     * Animates this task view if the user does not interact with the stack after a certain time.
-     */
-    void startNoUserInteractionAnimation() {
-        mHeaderView.startNoUserInteractionAnimation();
     }
     /**
      * Mark this task view that the user does has not interacted with the stack after a certain time.
@@ -513,6 +513,6 @@ public class PageView<T> extends FrameLayout implements View.OnClickListener,Vie
                 return true;
             }
         }
-        return false;
+        return false;//true为不加短按,false为加入短按
     }
 }

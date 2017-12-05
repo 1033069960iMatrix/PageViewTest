@@ -41,12 +41,8 @@ class PageStackViewLayoutAlgorithm<T> {
     private static float[] px;
     PageStackViewLayoutAlgorithm(PageStackViewConfig config) {
         mConfig = config;
-        // Precompute the path
         initializeCurve();
     }
-    /**
-     * Computes the stack and task rects
-     */
     void computeRects(int windowWidth, int windowHeight, Rect pageStackBounds) {//此时，pageStackBounds设置的也是前面的宽高，就是stack View的onmeasure得出的
         mViewRect.set(0, 0, windowWidth, windowHeight);
         mStackRect.set(pageStackBounds);//mViewRect和mStackViewRect和mStackVisibleRect在这个程序里是一样的
@@ -82,7 +78,7 @@ class PageStackViewLayoutAlgorithm<T> {
                 screenYToCurveProgress(mStackVisibleRect.bottom - (mStackVisibleRect.bottom -
                         mStackRect.bottom));
         // Update the task offsets
-        float pAtFrontMostCardTop = 0.1f;//0.5f默认,数值改大了会导致最上面的划走了回不来，负责1号卡片的最下滑动位置
+        float pAtFrontMostCardTop = 0.5f;//0.5f默认,数值改大了会导致最上面的划走了回不来，负责1号卡片的最下滑动位置
         int taskCount = data.size();
         for (int i = 0; i < taskCount; i++) {
             //Task task = tasks.get(i);
@@ -187,13 +183,14 @@ class PageStackViewLayoutAlgorithm<T> {
         if (p > 1) return 1f;
         float scaleRange = (1f - StackPeekMinScale);
         return StackPeekMinScale + (p * scaleRange);
+//        return StackPeekMinScale;
     }
     /**
      * Converts from a screen coordinate to the progress along the curve.
      */
     float screenYToCurveProgress(int screenY) {
         float x = (float) (screenY - mStackVisibleRect.top) / mStackVisibleRect.height();
-//        if (x < 0 || x > 1) return x;
+        if (x < 0 || x > 1) return x;
         float xIndex = x * PrecisionSteps;
         int xFloorIndex = (int) Math.floor(xIndex);
         int xCeilIndex = (int) Math.ceil(xIndex);
@@ -269,7 +266,9 @@ class PageStackViewLayoutAlgorithm<T> {
      * The log function describing the curve.
      */
     private static float logFunc(float x) {
-        return 1f - (float) (Math.pow(LogBase,reverse(x)) / (LogBase));
+//        return 1f - (float) (Math.pow(LogBase,reverse(x)) / (LogBase));
 //        return (float) 1/x;
+        return 1f-(float)(Math.pow(LogBase,-XScale*x));
+//        return (float) Math.sqrt(1-(1-x)*(1-x));
     }
 }

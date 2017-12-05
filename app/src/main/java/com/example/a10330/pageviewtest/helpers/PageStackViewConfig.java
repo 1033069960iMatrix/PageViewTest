@@ -121,14 +121,12 @@ public class PageStackViewConfig {
      */
 //    public boolean debugModeEnabled;
 //    public int svelteLevel;
-
     /**
      * Private constructor
      */
     private PageStackViewConfig(Context context) {
         // Properties that don't have to be reloaded with each configuration change can be loaded
         // here.
-
         // Interpolators
         fastOutSlowInInterpolator = AnimationUtils.loadInterpolator(context,
                 R.anim.fast_out_slow_in);
@@ -139,7 +137,6 @@ public class PageStackViewConfig {
         quintOutInterpolator = AnimationUtils.loadInterpolator(context,
                 R.anim.decelerate_quint);
     }
-
     /**
      * Updates the configuration to the current context
      */

@@ -29,4 +29,5 @@
             android:layout_height="match_parent" />
 
     </FrameLayout>
+
 </com.example.a10330.pageviewtest.views.PageView>

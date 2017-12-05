@@ -188,7 +188,7 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
         // stack views immediately to load all the views
         if (mAwaitingFirstLayout) {
             mStackScroller.setStackScrollToInitialState();
-            requestSynchronizeStackViewsWithModel();
+//            requestSynchronizeStackViewsWithModel();
 //            synchronizeStackViewsWithModel();
         }
         //以后去掉注释 上面的代码跟布局没关系，只是一开始跳到前几个显示
@@ -452,7 +452,7 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
     /**
      * Synchronizes the views with the model
      */
-    private boolean synchronizeStackViewsWithModel() {// TODO: 2017/11/11 再细看，关于动画的没看懂
+    private boolean synchronizeStackViewsWithModel() {// TODO: 2017/11/11 再细看
         if (mPageStackViewDirty) {
             // Get all the task transforms
             ArrayList<T> data = mCallback.getData();
@@ -495,11 +495,11 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
                             mLayoutAlgorithm.getStackTransform(1f, 0f, mTmpTransform, null);
                         }
                         tv.updateViewPropertiesToPageTransform(mTmpTransform, 0);
-                    }
+                    }//如果去掉上面的if语句最下方的动画是不对的
                 }
                 // Animate the task into place
                 tv.updateViewPropertiesToPageTransform(mCurrentTaskTransforms.get(i),
-                        mStackViewsAnimationDuration, mRequestUpdateClippingListener);
+                        mStackViewsAnimationDuration, mRequestUpdateClippingListener);//其中时间只是在点击差后才有效果
             }
             // Reset the request-synchronize params
             mStackViewsAnimationDuration = 0;
@@ -878,6 +878,7 @@ public class PageStackView<T> extends FrameLayout implements PageView.PageViewCa
     public void onScrollChanged(float p) {
         mUIDozeTrigger.poke();
         requestSynchronizeStackViewsWithModel();
-        postInvalidateOnAnimation();
+        postInvalidateOnAnimation();//这个去掉后没有松手后滑动效果了
+        //感觉没用
     }
 }
